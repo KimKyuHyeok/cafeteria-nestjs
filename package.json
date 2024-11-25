@@ -21,6 +21,7 @@
     "migrate:all": "npm run prisma:update && npm run migrate:push && cross-env MYSQL_DB=cafeteria-test npm run migrate:push"
   },
   "dependencies": {
+    "@apollo/server": "^4.11.2",
     "@nestjs/apollo": "^12.2.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
