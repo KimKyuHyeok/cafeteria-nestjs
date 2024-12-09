@@ -10,6 +10,7 @@ datasource db {
 model Company {
   id  Int   @id() @default(autoincrement())
   name String
+  password String
   registrationNumber String @unique()
   manager   String
   createdAt DateTime @default(now())
