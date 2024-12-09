@@ -49,14 +49,14 @@ beforeEach(async () => {
         }),
         AppModule
     ],
-    }).compile();
+    })
+    .overrideProvider(PrismaService)
+    .useValue(jestPrisma.client)
+    .compile();
   
     app = moduleFixture.createNestApplication();
-    prisma = app.get(PrismaService); // PrismaService 가져오기
-  
     app.useGlobalPipes(new ValidationPipe());
-    app.use(graphqlUploadExpress({ maxFileSize: 2000000, maxFiles: 1 })); // graphql-upload 설정
-  
+    app.use(graphqlUploadExpress({ maxFileSize: 2000000, maxFiles: 1 }));
     await app.init();
   });
 
