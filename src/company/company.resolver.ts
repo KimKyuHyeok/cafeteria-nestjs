@@ -6,7 +6,6 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './gql-auth.guard';
 
 @Resolver()
-@UseGuards(GqlAuthGuard)
 export class CompanyResolver {
     constructor(private readonly companyService: CompanyService) {}
 
