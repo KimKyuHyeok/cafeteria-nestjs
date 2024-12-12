@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { hash, compare } from "bcrypt";
 
@@ -18,7 +18,7 @@ export class PasswordService {
      */
     async hashPassword(password: string): Promise<string> {
         if (!this.isPasswordStrong(password)) {
-            throw new Error("비밀번호는 최소 8자 이상이어야 하며, 대문자, 소문자, 숫자 및 특수문자를 포함해야 합니다.");
+            throw new BadRequestException("비밀번호는 최소 8자 이상이어야 하며, 대문자, 소문자, 숫자 및 특수문자를 포함해야 합니다.");
         }
         return hash(password, this.saltRounds);
     }

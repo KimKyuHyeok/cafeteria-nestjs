@@ -35,8 +35,11 @@ export class CompanyService {
             })
             
         } catch (error) {
-            console.log('create company error :', error)
-        }
+            if (error instanceof ConflictException) {
+                throw error;
+            }
+            throw new Error('An unexpected error occurred during company creation.');
+            }
     }
 
     validateCompany(companyId: number): Promise<Company> {
