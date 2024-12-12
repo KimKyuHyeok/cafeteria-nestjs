@@ -10,7 +10,6 @@ export class CompanySignupInput {
 
     @Field(() => String)
     @IsNotEmpty()
-    @MinLength(8)
     password: string;
 
     @Field(() => String)
