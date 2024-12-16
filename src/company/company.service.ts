@@ -1,10 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Company } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { CompanySignupInput } from './dto/company-signup.input';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from 'src/common/auth/password.service';
 import { Token } from 'src/common/auth/model/token.model';
+import { CompanyJoinRequestDto } from './dto/company-join.request';
+import { CompanyJoinResponse } from './dto/company-join.response';
+import { PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { CompanySigninInput } from './dto/company-signin.input';
 
 @Injectable()
 export class CompanyService {
@@ -13,6 +17,23 @@ export class CompanyService {
         private readonly passwordService: PasswordService,
         private readonly jwtService: JwtService,
     ) {}
+
+    async signin(data: CompanySigninInput): Promise<Token> {
+
+        try {
+            const company = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber }})
+            
+            const passwordValid = await this.passwordService.validatePassword(data.password, company.password)
+
+            if (!passwordValid) throw new BadRequestException('비밀번호가 일치하지 않습니다.')
+
+            return this.generateTokens({
+                companyId: company.id
+            })
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async createCompany(payload: CompanySignupInput): Promise<Token> {
         payload.password = await this.passwordService.hashPassword(payload.password)
@@ -65,6 +86,79 @@ export class CompanyService {
             secret: process.env.JWT_REFRESH_SECRET,
             expiresIn: '7d',
         });
+    }
+
+    async userApproved(data: CompanyJoinRequestDto, company: any): Promise<CompanyJoinResponse> {
+
+        try {
+            const companyUser = await this.prisma.companyUser.findFirst({
+                where: {
+                    companyId: company.id,
+                    status: 'PENDING',
+                    userId: data.userId
+                }
+            })
+
+            if (!companyUser) throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
+
+            await this.prisma.companyUser.update({
+                where: {
+                    id: companyUser.id
+                },
+                data: {
+                    status: 'APPROVED'
+                }
+            })
+            return {
+                success: true,
+                message: '가입이 승인되었습니다.'
+            }
+
+        } catch (error) {
+            if (error instanceof PrismaClientValidationError) {
+                console.error("Prisma Client Validation Error: ", error); // 오류 로그 추가
+                throw new Error("Prisma validation error occurred");
+            }
+            return {
+                success: false,
+                message: error,
+            }
+        }
+    }
+
+    async userRejected(data: CompanyJoinRequestDto, company: any): Promise<CompanyJoinResponse> {
+        try {
+
+            const companyUser = await this.prisma.companyUser.findFirst({
+                where: {
+                    companyId: company.id,
+                    status: 'PENDING',
+                    userId: data.userId
+                }
+            })
+
+            if (!companyUser) throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
+
+            await this.prisma.companyUser.update({
+                where: {
+                    id: companyUser.id
+                },
+                data: {
+                    status: 'REJECTED'
+                }
+            })
+
+            return {
+                success: true,
+                message: '가입 승인 거절이 완료되었습니다.'
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error
+            }
+        }
+
     }
 
     
