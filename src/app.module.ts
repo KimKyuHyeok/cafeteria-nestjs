@@ -9,13 +9,15 @@ import { JwtStrategy } from './company/jwt.strategy';
 import { CompanyService } from './company/company.service';
 import { PasswordService } from './common/auth/password.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       debug: true,
       autoSchemaFile: true,
-      driver: ApolloDriver
+      driver: ApolloDriver,
+      context: ({ req }) => ({ req })
     }),
     PrismaModule.forRoot({
       isGlobal: true,
@@ -32,6 +34,7 @@ import { JwtService } from '@nestjs/jwt';
       isGlobal: true
     }),
     CompanyModule,
+    UserModule,
   ],
   providers: [AppResolver, CompanyService, JwtStrategy, PasswordService, JwtService],
 })
