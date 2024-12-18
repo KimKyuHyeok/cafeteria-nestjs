@@ -13,7 +13,7 @@ describe('company-join', () => {
         user = await userFactory.create()
         company = await companyFactory.create()
 
-        companyUser = await companyUserFactory(user, company);
+        companyUser = await companyUserFactory(user, company, 'PENDING');
     })
 
     // When : 올바른 정보로 userApproved 을 요청하면
