@@ -6,10 +6,11 @@ import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from 'src/common/auth/password.service';
 import { Token } from 'src/common/auth/model/token.model';
 import { CompanyJoinRequestDto } from './dto/company-join.request';
-import { CompanyJoinResponse } from './dto/company-join.response';
+import { CompanyUserResponse } from './dto/companyUser.response';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { CompanySigninInput } from './dto/company-signin.input';
 import { userWithCompanyDto } from './dto/user-with-company.dto';
+import { CompanyUserDto } from './dto/companyUser.dto';
 
 @Injectable()
 export class CompanyService {
@@ -89,7 +90,7 @@ export class CompanyService {
         });
     }
 
-    async userApproved(data: CompanyJoinRequestDto, company: any): Promise<CompanyJoinResponse> {
+    async userApproved(data: CompanyJoinRequestDto, company: any): Promise<CompanyUserResponse> {
 
         try {
             const companyUser = await this.prisma.companyUser.findFirst({
@@ -127,7 +128,7 @@ export class CompanyService {
         }
     }
 
-    async userRejected(data: CompanyJoinRequestDto, company: any): Promise<CompanyJoinResponse> {
+    async userRejected(data: CompanyJoinRequestDto, company: any): Promise<CompanyUserResponse> {
         try {
 
             const companyUser = await this.prisma.companyUser.findFirst({
@@ -311,6 +312,28 @@ export class CompanyService {
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt
           }));
+    }
+
+    async userCompanyDelete(data: CompanyUserDto, company: any): Promise<CompanyUserResponse> {
+        try {
+            await this.prisma.companyUser.delete({
+                where: {
+                    id: data.id,
+                    userId: data.userId,
+                    companyId: company.id
+                }
+            })
+
+            return {
+                success: true,
+                message: '삭제되었습니다.'
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error
+            }
+        }
     }
 
 

@@ -6,10 +6,11 @@ import { CompanyEntity } from 'src/common/decorators/company.decorator';
 import { CompanyJoinRequestDto } from './dto/company-join.request';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './gql-auth.guard';
-import { CompanyJoinResponse } from './dto/company-join.response';
+import { CompanyUserResponse } from './dto/companyUser.response';
 import { CompanySigninInput } from './dto/company-signin.input';
 import { Token } from 'src/common/auth/model/token.model';
 import { userWithCompanyDto } from './dto/user-with-company.dto';
+import { CompanyUserDto } from './dto/companyUser.dto';
 
 @Resolver()
 export class CompanyResolver {
@@ -38,15 +39,15 @@ export class CompanyResolver {
 
     // 가입 승인
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => CompanyJoinResponse)
-    async userApproved(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyJoinResponse> {
+    @Mutation(() => CompanyUserResponse)
+    async userApproved(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
         return await this.companyService.userApproved(data, company);
     }
 
     // 가입 거절
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => CompanyJoinResponse)
-    async userRejected(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyJoinResponse> {
+    @Mutation(() => CompanyUserResponse)
+    async userRejected(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
         return await this.companyService.userRejected(data, company);
     }
 
@@ -76,6 +77,12 @@ export class CompanyResolver {
     @Query(() => [userWithCompanyDto])
     async userWithCompanyListByRejected(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
         return this.companyService.userWithCompanyListByRejected(company);
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Mutation(() => CompanyUserResponse)
+    async userCompanyDelete(@Args('data') data: CompanyUserDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
+        return this.companyService.userCompanyDelete(data, company);
     }
 
 
