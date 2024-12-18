@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CompanyService } from './company.service';
 import { CompanySignupInput } from './dto/company-signup.input';
 import { Auth } from './model/auth.model';
@@ -9,6 +9,7 @@ import { GqlAuthGuard } from './gql-auth.guard';
 import { CompanyJoinResponse } from './dto/company-join.response';
 import { CompanySigninInput } from './dto/company-signin.input';
 import { Token } from 'src/common/auth/model/token.model';
+import { userWithCompanyDto } from './dto/user-with-company.dto';
 
 @Resolver()
 export class CompanyResolver {
@@ -48,6 +49,37 @@ export class CompanyResolver {
     async userRejected(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyJoinResponse> {
         return await this.companyService.userRejected(data, company);
     }
+
+    // 가입 요청 리스트
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [userWithCompanyDto])
+    async userWithCompanyListAll(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
+        return this.companyService.userWithCompanyListAll(company);
+    }
+
+    // 승인 대기 리스트
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [userWithCompanyDto])
+    async userWithCompanyListByPending(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
+        return this.companyService.userWithCompanyListByPending(company);
+    }
+
+    // 승인 완료 리스트
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [userWithCompanyDto])
+    async userWithCompanyListByApproved(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
+        return this.companyService.userWithCompanyListByApproved(company);
+    }
+
+    // 승인 거절 리스트
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [userWithCompanyDto])
+    async userWithCompanyListByRejected(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
+        return this.companyService.userWithCompanyListByRejected(company);
+    }
+
+
+    
 
 
 }

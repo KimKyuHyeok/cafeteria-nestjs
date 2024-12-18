@@ -9,6 +9,7 @@ import { CompanyJoinRequestDto } from './dto/company-join.request';
 import { CompanyJoinResponse } from './dto/company-join.response';
 import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { CompanySigninInput } from './dto/company-signin.input';
+import { userWithCompanyDto } from './dto/user-with-company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -160,6 +161,159 @@ export class CompanyService {
         }
 
     }
+
+    async userWithCompanyListAll(company: any): Promise<userWithCompanyDto[]> {
+
+        const users = await this.prisma.user.findMany({
+            where: {
+              CompanyUser: {
+                some: {
+                  companyId: company.id,
+                },
+              },
+            },
+            select: {
+              name: true,
+              phoneNumber: true,
+              email: true,
+              CompanyUser: {
+                where: {
+                  companyId: company.id,
+                },
+                select: {
+                  status: true,
+                  createdAt: true,
+                  updatedAt: true
+                },
+              },
+            },
+          });
+      
+          return users.map(user => ({
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            status: user.CompanyUser[0]?.status,
+            createdAt: user.CompanyUser[0]?.createdAt,
+            updatedAt: user.CompanyUser[0]?.updatedAt
+          }));
+    }
+
+    async userWithCompanyListByPending(company: any): Promise<userWithCompanyDto[]> {
+
+        const users = await this.prisma.user.findMany({
+            where: {
+              CompanyUser: {
+                some: {
+                  companyId: company.id,
+                  status: 'PENDING'
+                },
+              },
+            },
+            select: {
+              name: true,
+              phoneNumber: true,
+              email: true,
+              CompanyUser: {
+                where: {
+                  companyId: company.id,
+                },
+                select: {
+                  status: true,
+                  createdAt: true,
+                  updatedAt: true
+                },
+              },
+            },
+          });
+      
+          return users.map(user => ({
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            status: user.CompanyUser[0]?.status,
+            createdAt: user.CompanyUser[0]?.createdAt,
+            updatedAt: user.CompanyUser[0]?.updatedAt
+          }));
+    }
+
+    async userWithCompanyListByApproved(company: any): Promise<userWithCompanyDto[]> {
+
+        const users = await this.prisma.user.findMany({
+            where: {
+              CompanyUser: {
+                some: {
+                  companyId: company.id,
+                  status: "APPROVED"
+                },
+              },
+            },
+            select: {
+              name: true,
+              phoneNumber: true,
+              email: true,
+              CompanyUser: {
+                where: {
+                  companyId: company.id,
+                },
+                select: {
+                  status: true,
+                  createdAt: true,
+                  updatedAt: true
+                },
+              },
+            },
+          });
+      
+          return users.map(user => ({
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            status: user.CompanyUser[0]?.status,
+            createdAt: user.CompanyUser[0]?.createdAt,
+            updatedAt: user.CompanyUser[0]?.updatedAt
+          }));
+    }
+
+    async userWithCompanyListByRejected(company: any): Promise<userWithCompanyDto[]> {
+
+        const users = await this.prisma.user.findMany({
+            where: {
+              CompanyUser: {
+                some: {
+                  companyId: company.id,
+                  status: "REJECTED"
+                },
+              },
+            },
+            select: {
+              name: true,
+              phoneNumber: true,
+              email: true,
+              CompanyUser: {
+                where: {
+                  companyId: company.id,
+                },
+                select: {
+                  status: true,
+                  createdAt: true,
+                  updatedAt: true
+                },
+              },
+            },
+          });
+      
+          return users.map(user => ({
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            email: user.email,
+            status: user.CompanyUser[0]?.status,
+            createdAt: user.CompanyUser[0]?.createdAt,
+            updatedAt: user.CompanyUser[0]?.updatedAt
+          }));
+    }
+
+
 
     
 }
