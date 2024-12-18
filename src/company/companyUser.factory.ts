@@ -1,7 +1,7 @@
 import { defineCompanyUserFactory } from "src/__generated__/fabbrica";
 
 
-export function companyUserFactory(user: any, company: any) {
+export function companyUserFactory(user: any, company: any, status: any) {
     const result = defineCompanyUserFactory({
         defaultData: {
             company: {
@@ -10,7 +10,7 @@ export function companyUserFactory(user: any, company: any) {
             user: {
                 connect: { id: user.id }
             },
-            status: 'PENDING'
+            status
         }
     }).create();
 
