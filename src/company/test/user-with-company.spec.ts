@@ -118,4 +118,48 @@ describe('user-with-company', () => {
         })
         expectErrorMessage(response.body, 'Unauthorized')
     })
+
+    it('When a delete request for a companyUser is sent, then the user is removed from the list, and a response containing success and a message is returned.', async() => {
+        const data = {
+            id: companyUserApproved.id,
+            userId: companyUserApproved.userId
+        }
+        const response = await request(company).send({
+            query: `
+                mutation userCompanyDelete($data: CompanyUserDto!) {
+                    userCompanyDelete(data: $data) {
+                        success
+                        message
+                    }
+                }
+            `,
+            variables: {
+                data
+            }
+        })
+        const result = response.body.data.userCompanyDelete;
+        expect(result.success).toBe(true)
+        expect(result.message).toBe('삭제되었습니다.')
+    })
+
+    it('When a delete request is sent without the necessary permissions, an Unauthorized error message is returned.', async() => {
+        const data = {
+            id: companyUserApproved.id,
+            userId: companyUserApproved.userId
+        }
+        const response = await request().send({
+            query: `
+                mutation userCompanyDelete($data: CompanyUserDto!) {
+                    userCompanyDelete(data: $data) {
+                        success
+                        message
+                    }
+                }
+            `,
+            variables: {
+                data
+            }
+        })
+        expectErrorMessage(response.body, 'Unauthorized')
+    })
 })
