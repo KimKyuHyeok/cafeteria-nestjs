@@ -2,19 +2,30 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator fabbrica {
+  provider = "prisma-fabbrica"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Company {
   id  Int   @id() @default(autoincrement())
   name String
+  password String
   registrationNumber String @unique()
   manager   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
-  user  User[]
+  CompanyUser CompanyUser[]
   coupon Coupon[]
   companyCard CompanyCard[]
   payments Payments[]
@@ -22,17 +33,28 @@ model Company {
 
 model User {
   id        Int      @id() @default(autoincrement())
-  companyId Int
-  company Company  @relation(fields: [companyId], references: [id])
   name      String
   phoneNumber String
   email     String   @unique()
   password  String
-  exp       Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+  CompanyUser CompanyUser[]
   usageHistory UsageHistory[]
 }
+
+model CompanyUser {
+  id      Int     @id() @default(autoincrement())
+  companyId  Int
+  company Company @relation(fields: [companyId], references: [id])
+  userId  Int
+  user    User    @relation(fields: [userId], references: [id])
+  status  Status
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@unique([companyId, status, userId], name: "companyId_status_userId")
+ }
 
 model Coupon {
   id      Int @id @default(autoincrement())
