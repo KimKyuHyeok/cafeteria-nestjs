@@ -29,8 +29,8 @@ describe('user-auth', () => {
 
         const response = await request().send({
             query: `
-                mutation signup($data: UserSignupInput!) {
-                    signup(data: $data) {
+                mutation userSignup($data: UserSignupInput!) {
+                    userSignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -44,7 +44,7 @@ describe('user-auth', () => {
         expect(response).toBeDefined();
         expect(response.status).toBe(200);
 
-        const { accessToken, refreshToken } = response.body.data.signup;
+        const { accessToken, refreshToken } = response.body.data.userSignup;
         expect(accessToken).toBeDefined();
         expect(refreshToken).toBeDefined();
     })
@@ -59,8 +59,8 @@ describe('user-auth', () => {
 
         const response = await request().send({
             query: `
-                mutation signup($data: UserSignupInput!) {
-                    signup(data: $data) {
+                mutation userSignup($data: UserSignupInput!) {
+                    userSignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -87,8 +87,8 @@ describe('user-auth', () => {
 
         const response = await request().send({
             query: `
-                mutation signup($data: UserSignupInput!) {
-                    signup(data: $data) {
+                mutation userSignup($data: UserSignupInput!) {
+                    userSignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -110,8 +110,8 @@ describe('user-auth', () => {
 
         const response = await request().send({
             query: `
-                mutation signin($data: UserSigninInput!) {
-                    signin(data: $data) {
+                mutation userSignin($data: UserSigninInput!) {
+                    userSignin(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -125,7 +125,7 @@ describe('user-auth', () => {
         expect(response).toBeDefined();
         expect(response.status).toBe(200);
 
-        const { accessToken, refreshToken } = response.body.data.signin;
+        const { accessToken, refreshToken } = response.body.data.userSignin;
         expect(accessToken).toBeDefined();
         expect(refreshToken).toBeDefined();    
     })
