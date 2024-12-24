@@ -6,6 +6,8 @@ import { UserSignupInput } from './dto/user-signup.input';
 import { Token } from 'src/common/auth/model/token.model';
 import { User } from './models/user.model';
 import { UserSigninInput } from './dto/user-signin.input';
+import { CompanyUserResponse } from 'src/company/dto/companyUser.response';
+import { CompanyUserJoinRequestDto } from './dto/companyUserJoinRequest.dto';
 
 @Injectable()
 export class UserService {
@@ -75,13 +77,46 @@ export class UserService {
         secret: process.env.JWT_ACCESS_SECRET,
         expiresIn: '24h',
     });
-}
+  }
 
-private generateRefreshToken(payload: { userId: number }): string {
+  private generateRefreshToken(payload: { userId: number }): string {
     return this.jwtService.sign(payload, {
         secret: process.env.JWT_REFRESH_SECRET,
         expiresIn: '7d',
     });
-}
+  }
+  
+  async companyUserJoinRequest(dto: CompanyUserJoinRequestDto, user: any): Promise<CompanyUserResponse> {
+    
+    try {
+      const check = await this.prisma.companyUser.findMany({
+        where: {
+          companyId: dto.companyId,
+          userId: user.id
+        }
+      })
+
+      if (check.length > 0) throw new ConflictException('이미 신청했거나 승인거절 상태입니다.');
+
+      await this.prisma.companyUser.create({
+        data: {
+          company: { connect: { id: dto.companyId }},
+          user: { connect: { id: user.id }},
+          status: 'PENDING'
+        }
+      })
+
+      return {
+        success: true,
+        message: '신청이 완료되었습니다.'
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error
+      }
+    }
+  }
+  
 
 }
