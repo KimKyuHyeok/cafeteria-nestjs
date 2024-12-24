@@ -13,19 +13,20 @@ export let app: INestApplication;
 let prisma: PrismaService;
 
 export const request = (entity?: Company | User | null) => {
-    if (entity === null) {
+    if (entity === null || entity === undefined) {
         return supertest(app.getHttpServer()).post('/graphql');
     }
 
     let token: string;
-    
-    if ('registrationNumber' in entity) {
-        const company = entity;
-        token = jwt.sign({ companyId: company.id }, process.env.JWT_ACCESS_SECRET);
-    }
-    else {
-        const user = entity;
-        token = jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET);
+
+    if ('id' in entity) {
+        if ((entity as Company).registrationNumber) {
+            const company = entity as Company;
+            token = jwt.sign({ companyId: company.id }, process.env.JWT_ACCESS_SECRET);
+        } else {
+            const user = entity as User;
+            token = jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET);
+        }
     }
 
     return supertest(app.getHttpServer())
