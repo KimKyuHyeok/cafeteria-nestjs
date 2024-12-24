@@ -3,7 +3,7 @@ import { GqlExecutionContext } from "@nestjs/graphql";
 
 export const CompanyEntity = createParamDecorator(
     (data: unknown, ctx: ExecutionContext) => {
-      const company = GqlExecutionContext.create(ctx).getContext().req;
+      const company = GqlExecutionContext.create(ctx).getContext().req.user;
       return company;
     }
   );
