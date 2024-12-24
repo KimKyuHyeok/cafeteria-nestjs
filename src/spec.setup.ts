@@ -7,21 +7,42 @@ import { PrismaService } from "nestjs-prisma";
 import { graphqlUploadExpress } from 'graphql-upload';
 import { Company } from "./company/model/company.model";
 import { ConfigModule } from "@nestjs/config";
+import { User } from "./user/models/user.model";
 
 export let app: INestApplication;
 let prisma: PrismaService;
 
-export const request = (company: Company | null = null) => {
-    if (company) {
-        const token = jwt.sign({ companyId: company.id }, process.env.JWT_ACCESS_SECRET);
-
-        return supertest(app.getHttpServer())
-            .post('/graphql')
-            .set('Authorization', `Bearer ${token}`);
+export const request = (entity?: Company | User | null) => {
+    if (entity === null) {
+        return supertest(app.getHttpServer()).post('/graphql');
     }
 
-    return supertest(app.getHttpServer()).post('/graphql');
+    let token: string;
+    
+    if ('registrationNumber' in entity) {
+        const company = entity;
+        token = jwt.sign({ companyId: company.id }, process.env.JWT_ACCESS_SECRET);
+    }
+    else {
+        const user = entity;
+        token = jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET);
+    }
+
+    return supertest(app.getHttpServer())
+        .post('/graphql')
+        .set('Authorization', `Bearer ${token}`);
 };
+
+export const userRequest = (user: User | null = null) => {
+    if (user) {
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET);
+
+        return supertest(app.getHttpServer())
+        .post('/graphql')
+        .set('Authorization', `Bearer ${token}`);
+    }
+    return supertest(app.getHttpServer()).post('/graphql')
+}
 
 export const expectError = (response: any, error: string) => {
     const errors: string[] = [];
