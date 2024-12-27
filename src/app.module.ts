@@ -12,6 +12,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { JwtUserStrategy } from './company/jwt.user.strategy';
 import { UserService } from './user/user.service';
+import { CouponModule } from './coupon/coupon.module';
+import { RestaurantResolver } from './restaurant/restaurant.resolver';
+import { RestaurantService } from './restaurant/restaurant.service';
+import { RestaurantModule } from './restaurant/restaurant.module';
+import { PaymentsModule } from './payments/payments.module';
+import { UsageHistoryResolver } from './usage-history/usage-history.resolver';
+import { UsageHistoryModule } from './usage-history/usage-history.module';
 
 @Module({
   imports: [
@@ -37,7 +44,11 @@ import { UserService } from './user/user.service';
     }),
     CompanyModule,
     UserModule,
+    CouponModule,
+    RestaurantModule,
+    PaymentsModule,
+    UsageHistoryModule,
   ],
-  providers: [AppResolver, CompanyService, UserService, JwtCompanyStrategy, JwtUserStrategy, PasswordService, JwtService],
+  providers: [AppResolver, CompanyService, UserService, JwtCompanyStrategy, JwtUserStrategy, PasswordService, JwtService, RestaurantResolver, RestaurantService, UsageHistoryResolver],
 })
 export class AppModule {}
