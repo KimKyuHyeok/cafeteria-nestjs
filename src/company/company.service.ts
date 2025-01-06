@@ -174,6 +174,7 @@ export class CompanyService {
               },
             },
             select: {
+              id: true,
               name: true,
               phoneNumber: true,
               email: true,
@@ -182,6 +183,7 @@ export class CompanyService {
                   companyId: company.id,
                 },
                 select: {
+                  id: true,
                   status: true,
                   createdAt: true,
                   updatedAt: true
@@ -191,12 +193,14 @@ export class CompanyService {
           });
       
           return users.map(user => ({
+            id: user.id,
             name: user.name,
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
             createdAt: user.CompanyUser[0]?.createdAt,
-            updatedAt: user.CompanyUser[0]?.updatedAt
+            updatedAt: user.CompanyUser[0]?.updatedAt,
+            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -212,6 +216,7 @@ export class CompanyService {
               },
             },
             select: {
+              id: true,
               name: true,
               phoneNumber: true,
               email: true,
@@ -220,6 +225,7 @@ export class CompanyService {
                   companyId: company.id,
                 },
                 select: {
+                  id: true,
                   status: true,
                   createdAt: true,
                   updatedAt: true
@@ -229,12 +235,14 @@ export class CompanyService {
           });
       
           return users.map(user => ({
+            id: user.id,
             name: user.name,
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
             createdAt: user.CompanyUser[0]?.createdAt,
-            updatedAt: user.CompanyUser[0]?.updatedAt
+            updatedAt: user.CompanyUser[0]?.updatedAt,
+            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -250,6 +258,7 @@ export class CompanyService {
               },
             },
             select: {
+              id: true,
               name: true,
               phoneNumber: true,
               email: true,
@@ -258,6 +267,7 @@ export class CompanyService {
                   companyId: company.id,
                 },
                 select: {
+                  id: true,
                   status: true,
                   createdAt: true,
                   updatedAt: true
@@ -267,12 +277,14 @@ export class CompanyService {
           });
       
           return users.map(user => ({
+            id: user.id,
             name: user.name,
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
             createdAt: user.CompanyUser[0]?.createdAt,
-            updatedAt: user.CompanyUser[0]?.updatedAt
+            updatedAt: user.CompanyUser[0]?.updatedAt,
+            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -288,6 +300,7 @@ export class CompanyService {
               },
             },
             select: {
+              id: true,
               name: true,
               phoneNumber: true,
               email: true,
@@ -296,6 +309,7 @@ export class CompanyService {
                   companyId: company.id,
                 },
                 select: {
+                  id: true,
                   status: true,
                   createdAt: true,
                   updatedAt: true
@@ -305,12 +319,14 @@ export class CompanyService {
           });
       
           return users.map(user => ({
+            id: user.id,
             name: user.name,
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
             createdAt: user.CompanyUser[0]?.createdAt,
-            updatedAt: user.CompanyUser[0]?.updatedAt
+            updatedAt: user.CompanyUser[0]?.updatedAt,
+            companyUserId: user.CompanyUser[0].id
           }));
     }
 

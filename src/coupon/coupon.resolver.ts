@@ -10,10 +10,17 @@ import { UseGuards } from '@nestjs/common';
 import { GqlCompanyAuthGuard } from 'src/company/gql-company-auth.guard';
 import { GqlUserAuthGuard } from 'src/company/gql-user-auth.guard';
 import { CouponSelectDto } from './dto/coupon-select.dto';
+import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
 
 @Resolver()
 export class CouponResolver {
     constructor(private readonly couponService: CouponService) {}
+
+    @UseGuards(GqlCompanyAuthGuard)
+    @Query(() => [RestaurantWithCouponsDto])
+    async couponsFindByCompanyId(@CompanyEntity() company: any): Promise<RestaurantWithCouponsDto[]> {
+        return await this.couponService.couponsFindByCompanyId(company);
+    }
 
     @UseGuards(GqlCompanyAuthGuard)
     @Query(() => Number)

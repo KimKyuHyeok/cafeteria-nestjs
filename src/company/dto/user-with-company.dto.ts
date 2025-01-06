@@ -4,6 +4,10 @@ import { IsNotEmpty } from "class-validator";
 @ObjectType()
 
 export class userWithCompanyDto {
+
+    @Field()
+    @IsNotEmpty()
+    id: number;
     
     @Field()
     @IsNotEmpty()
@@ -26,4 +30,8 @@ export class userWithCompanyDto {
 
     @Field()
     updatedAt?: Date
+
+    @Field()
+    @IsNotEmpty()
+    companyUserId: number;
 }
