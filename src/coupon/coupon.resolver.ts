@@ -11,6 +11,7 @@ import { GqlCompanyAuthGuard } from 'src/company/gql-company-auth.guard';
 import { GqlUserAuthGuard } from 'src/company/gql-user-auth.guard';
 import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
+import { QRCodeResponseDto } from './dto/qrcode-response.dto';
 
 @Resolver()
 export class CouponResolver {
@@ -44,5 +45,11 @@ export class CouponResolver {
     @Mutation(() => CouponResponse)
     async couponUse(@Args('data') data: CouponUseDto, @UserEntity() user: any): Promise<CouponResponse> {
         return await this.couponService.couponUse(data, user);
+    }
+
+    @UseGuards(GqlUserAuthGuard)
+    @Query(() => QRCodeResponseDto)
+    async generateQrCode(@Args('data') data: CouponUseDto, @UserEntity() user: any): Promise<QRCodeResponseDto> {
+        return await this.couponService.generateQrCode(data, user);
     }
 }
