@@ -22,6 +22,12 @@ export class CouponResolver {
         return await this.couponService.couponsFindByCompanyId(company);
     }
 
+    @UseGuards(GqlUserAuthGuard)
+    @Query(() => [RestaurantWithCouponsDto])
+    async couponsFindByUserId(@UserEntity() user: any): Promise<RestaurantWithCouponsDto[]> {
+        return await this.couponService.couponsFindByUserId(user);
+    }
+
     @UseGuards(GqlCompanyAuthGuard)
     @Query(() => Number)
     async couponSelectByCompanyId(@CompanyEntity() company: any, @Args('data') data: CouponSelectDto): Promise<Number> {
