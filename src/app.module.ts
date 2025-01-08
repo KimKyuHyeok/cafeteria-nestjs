@@ -19,6 +19,9 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 import { PaymentsModule } from './payments/payments.module';
 import { UsageHistoryResolver } from './usage-history/usage-history.resolver';
 import { UsageHistoryModule } from './usage-history/usage-history.module';
+import { StoreResolver } from './store/store.resolver';
+import { StoreService } from './store/store.service';
+import { StoreModule } from './store/store.module';
 
 @Module({
   imports: [
@@ -48,7 +51,8 @@ import { UsageHistoryModule } from './usage-history/usage-history.module';
     RestaurantModule,
     PaymentsModule,
     UsageHistoryModule,
+    StoreModule,
   ],
-  providers: [AppResolver, CompanyService, UserService, JwtCompanyStrategy, JwtUserStrategy, PasswordService, JwtService, RestaurantResolver, RestaurantService, UsageHistoryResolver],
+  providers: [AppResolver, CompanyService, UserService, JwtCompanyStrategy, JwtUserStrategy, PasswordService, JwtService, RestaurantResolver, RestaurantService, UsageHistoryResolver, StoreResolver, StoreService],
 })
 export class AppModule {}
