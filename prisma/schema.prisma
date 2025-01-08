@@ -110,6 +110,7 @@ model Restaurant {
   updatedAt DateTime @updatedAt()
   usageHistory UsageHistory[]
   coupon Coupon[]
+  store  Store[]
 }
 
 model UsageHistory {
@@ -122,4 +123,14 @@ model UsageHistory {
   user User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+}
+
+model Store {
+  id  Int   @id @default(autoincrement())
+  restaurantId  Int
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  name  String
+  password  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
 }
