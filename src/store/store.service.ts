@@ -45,7 +45,6 @@ export class StoreService {
                 data: {
                     name: data.name,
                     password: data.password,
-                    restaurantId: null
                 }
             })
 
