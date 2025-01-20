@@ -103,6 +103,8 @@ model Payments {
 model Restaurant {
   id    Int   @id @default(autoincrement())
   name String
+  storeId Int?
+  store Store? @relation(fields: [storeId], references: [id])
   address String
   image   String  @default("normal")
   price   Int
@@ -122,4 +124,13 @@ model UsageHistory {
   user User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
+}
+
+model Store {
+  id  Int   @id @default(autoincrement())
+  name  String
+  password  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+  restaurant Restaurant[]
 }
