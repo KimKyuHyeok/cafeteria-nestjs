@@ -201,7 +201,6 @@ export class CompanyService {
             companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
-            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -244,7 +243,6 @@ export class CompanyService {
             companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
-            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -287,7 +285,6 @@ export class CompanyService {
             companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
-            companyUserId: user.CompanyUser[0].id
           }));
     }
 
@@ -330,7 +327,6 @@ export class CompanyService {
             companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
-            companyUserId: user.CompanyUser[0].id
           }));
     }
 
