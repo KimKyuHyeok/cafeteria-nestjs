@@ -33,9 +33,5 @@ export class userWithCompanyDto {
     createdAt: Date
 
     @Field()
-    updatedAt?: Date
-
-    @Field()
-    @IsNotEmpty()
-    companyUserId: number;
+    updatedAt?: Date;
 }
