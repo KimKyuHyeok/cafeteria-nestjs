@@ -198,6 +198,7 @@ export class CompanyService {
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
+            companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
             companyUserId: user.CompanyUser[0].id
@@ -240,6 +241,7 @@ export class CompanyService {
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
+            companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
             companyUserId: user.CompanyUser[0].id
@@ -282,6 +284,7 @@ export class CompanyService {
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
+            companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
             companyUserId: user.CompanyUser[0].id
@@ -324,6 +327,7 @@ export class CompanyService {
             phoneNumber: user.phoneNumber,
             email: user.email,
             status: user.CompanyUser[0]?.status,
+            companyUserId: user.CompanyUser[0].id,
             createdAt: user.CompanyUser[0]?.createdAt,
             updatedAt: user.CompanyUser[0]?.updatedAt,
             companyUserId: user.CompanyUser[0].id

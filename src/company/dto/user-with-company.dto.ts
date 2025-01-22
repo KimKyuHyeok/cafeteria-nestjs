@@ -26,6 +26,10 @@ export class userWithCompanyDto {
 
     @Field()
     @IsNotEmpty()
+    companyUserId: number;
+
+    @Field()
+    @IsNotEmpty()
     createdAt: Date
 
     @Field()

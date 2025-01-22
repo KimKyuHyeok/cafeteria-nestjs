@@ -8,6 +8,7 @@ import { User } from './models/user.model';
 import { UserSigninInput } from './dto/user-signin.input';
 import { CompanyUserResponse } from 'src/company/dto/companyUser.response';
 import { CompanyUserJoinRequestDto } from './dto/companyUserJoinRequest.dto';
+import { Company } from 'src/company/model/company.model';
 
 @Injectable()
 export class UserService {
@@ -116,6 +117,16 @@ export class UserService {
         message: error
       }
     }
+  }
+
+  async companyListSearch(keyword: string): Promise<Company[]> {
+    return await this.prisma.company.findMany({
+      where: {
+        name: {
+          contains: keyword
+        }
+      }
+    })
   }
   
 
