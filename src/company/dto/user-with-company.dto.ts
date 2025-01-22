@@ -4,6 +4,10 @@ import { IsNotEmpty } from "class-validator";
 @ObjectType()
 
 export class userWithCompanyDto {
+
+    @Field()
+    @IsNotEmpty()
+    id: number;
     
     @Field()
     @IsNotEmpty()
@@ -19,6 +23,10 @@ export class userWithCompanyDto {
     @Field()
     @IsNotEmpty()
     status: string;
+
+    @Field()
+    @IsNotEmpty()
+    companyUserId: number;
 
     @Field()
     @IsNotEmpty()
