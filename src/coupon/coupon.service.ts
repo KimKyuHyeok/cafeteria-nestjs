@@ -66,6 +66,63 @@ export class CouponService {
         }
     }
 
+    async couponsFindByUserId(user: any): Promise<RestaurantWithCouponsDto[]> {
+
+        try {
+            const companyUser = await this.prisma.companyUser.findFirst({
+                where: { userId: user.id }
+            })
+            const restaurantsWithCoupons = await this.prisma.restaurant.findMany({
+                where: {
+                  coupon: {
+                    some: {
+                      companyId: companyUser.companyId,
+                      count: {
+                        gte: 1,
+                      },
+                    },
+                  },
+                },
+                include: {
+                  coupon: {
+                    where: {
+                      companyId: companyUser.companyId,
+                      count: {
+                        gte: 1,
+                      },
+                    },
+                    select: {
+                      id: true,
+                      restaurantId: true,
+                      companyId: true,
+                      count: true,
+                    },
+                  },
+                },
+            });
+
+            const result = restaurantsWithCoupons.map((restaurant) => ({
+                id: restaurant.id,
+                name: restaurant.name,
+                address: restaurant.address,
+                coupon: restaurant.coupon.reduce((acc, curr) => {
+                  const existing = acc.find((item) => item.restaurantId === curr.restaurantId);
+                  if (existing) {
+                    existing.count += curr.count; // count 합산
+                  } else {
+                    acc.push({ ...curr });
+                  }
+                  return acc;
+                }, [] as { id: number; restaurantId: number; companyId: number; count: number }[]),
+              }));
+
+            return result;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
     // 잔여 쿠폰 확인
     async couponSelectByCompanyId(company: any, data: CouponSelectDto): Promise<Number> {
         
