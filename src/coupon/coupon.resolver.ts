@@ -12,6 +12,7 @@ import { GqlUserAuthGuard } from 'src/company/gql-user-auth.guard';
 import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
 import { QRCodeResponseDto } from './dto/qrcode-response.dto';
+import { QrDataDto } from './dto/qrcode-data.dto';
 
 @Resolver()
 export class CouponResolver {
@@ -42,7 +43,7 @@ export class CouponResolver {
     }
 
     @Mutation(() => CouponResponse)
-    async couponUse(@Args('qrData') data: CouponUseDto): Promise<CouponResponse> {
+    async couponUse(@Args('qrData') data: QrDataDto): Promise<CouponResponse> {
         return await this.couponService.couponUse(data);
     }
 
