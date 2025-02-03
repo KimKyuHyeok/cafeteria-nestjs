@@ -8,6 +8,7 @@ import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
 import QRCode from 'qrcode'
 import { QRCodeResponseDto } from './dto/qrcode-response.dto';
+import { QrDataDto } from './dto/qrcode-data.dto';
 
 @Injectable()
 export class CouponService {
@@ -162,7 +163,7 @@ export class CouponService {
     }
 
     // 잔여 쿠폰 확인 후 차감
-    async couponUse(data: CouponUseDto): Promise<CouponResponse> {
+    async couponUse(data: QrDataDto): Promise<CouponResponse> {
 
         try {
             const companyUser = await this.prisma.companyUser.findFirst({
