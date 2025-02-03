@@ -41,10 +41,9 @@ export class CouponResolver {
         return await this.couponService.couponCharge(data, company);
     }
 
-    @UseGuards(GqlUserAuthGuard)
     @Mutation(() => CouponResponse)
-    async couponUse(@Args('data') data: CouponUseDto, @UserEntity() user: any): Promise<CouponResponse> {
-        return await this.couponService.couponUse(data, user);
+    async couponUse(@Args('qrData') data: CouponUseDto): Promise<CouponResponse> {
+        return await this.couponService.couponUse(data);
     }
 
     @UseGuards(GqlUserAuthGuard)
