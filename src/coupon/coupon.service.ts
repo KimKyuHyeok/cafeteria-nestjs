@@ -162,13 +162,13 @@ export class CouponService {
     }
 
     // 잔여 쿠폰 확인 후 차감
-    async couponUse(data: CouponUseDto, user: any): Promise<CouponResponse> {
+    async couponUse(data: CouponUseDto): Promise<CouponResponse> {
 
         try {
             const companyUser = await this.prisma.companyUser.findFirst({
                 where: {
                     companyId: data.companyId,
-                    userId: user.id,
+                    userId: data.userId,
                     status: 'APPROVED'
                 }
             })
@@ -193,7 +193,7 @@ export class CouponService {
                 data: {
                     coupon: { connect: { id: coupon.id }},
                     restaurant: { connect: { id: data.restaurantId }},
-                    user: { connect: { id: user.id }}
+                    user: { connect: { id: data.userId }}
                 }
             })
 

@@ -9,5 +9,9 @@ export class CouponUseDto {
 
     @Field()
     @IsNotEmpty()
+    userId: number;
+
+    @Field()
+    @IsNotEmpty()
     restaurantId: number;
 }
