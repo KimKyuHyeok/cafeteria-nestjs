@@ -6,6 +6,8 @@ import { CouponUseDto } from './dto/coupon-use.dto';
 import { CouponResponse } from './dto/coupon.response';
 import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
+import QRCode from 'qrcode'
+import { QRCodeResponseDto } from './dto/qrcode-response.dto';
 
 @Injectable()
 export class CouponService {
@@ -191,7 +193,7 @@ export class CouponService {
                 data: {
                     coupon: { connect: { id: coupon.id }},
                     restaurant: { connect: { id: data.restaurantId }},
-                    user: { connect: { id: data.userId }}
+                    user: { connect: { id: user.id }}
                 }
             })
 
@@ -204,6 +206,42 @@ export class CouponService {
                 success: false,
                 message: error
             }
+        }
+    }
+
+    async generateQrCode(user: any, data: CouponUseDto): Promise<QRCodeResponseDto> {
+        try {
+            const companyUser = await this.prisma.companyUser.findFirst({
+                where: {
+                    userId: user.id,
+                    companyId: data.companyId,
+                }
+            })
+
+            if (!companyUser) throw new ForbiddenException('권한이 없습니다.');
+
+            const count = await this.prisma.coupon.findFirst({
+                where: {
+                    companyId: data.companyId,
+                    restaurantId: data.restaurantId,
+                    count: { gte: 1 }
+                }
+            })
+
+            if (!count) throw new NotFoundException('쿠폰 잔여 수량이 부족합니다.');
+
+            const qrData = JSON.stringify({
+                couponId: count.id,
+                userId: user.id,
+                restaurantId: data.restaurantId,
+            });
+            const qrCode = await QRCode.toDataURL(qrData)
+            const response = new QRCodeResponseDto();
+            response.url = qrCode;
+    
+            return response;
+        } catch (error) {
+            throw new Error(`QR 코드 생성 실패: ${error.message}`);
         }
     }
 
