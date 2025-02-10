@@ -22,14 +22,15 @@ import { UsageHistoryModule } from './usage-history/usage-history.module';
 import { StoreResolver } from './store/store.resolver';
 import { StoreService } from './store/store.service';
 import { StoreModule } from './store/store.module';
+import { join } from 'path';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       debug: true,
-      autoSchemaFile: true,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       driver: ApolloDriver,
-      context: ({ req }) => ({ req })
+      context: ({ req }) => ({ req }),
     }),
     PrismaModule.forRoot({
       isGlobal: true,
@@ -53,6 +54,19 @@ import { StoreModule } from './store/store.module';
     UsageHistoryModule,
     StoreModule,
   ],
-  providers: [AppResolver, CompanyService, UserService, JwtCompanyStrategy, JwtUserStrategy, PasswordService, JwtService, RestaurantResolver, RestaurantService, UsageHistoryResolver, StoreResolver, StoreService],
+  providers: [
+    AppResolver, 
+    CompanyService, 
+    UserService, 
+    JwtCompanyStrategy, 
+    JwtUserStrategy, 
+    PasswordService, 
+    JwtService, 
+    RestaurantResolver, 
+    RestaurantService, 
+    UsageHistoryResolver, 
+    StoreResolver, 
+    StoreService
+  ],
 })
 export class AppModule {}
