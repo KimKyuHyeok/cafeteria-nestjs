@@ -166,20 +166,9 @@ export class CouponService {
     async couponUse(data: QrDataDto): Promise<CouponResponse> {
 
         try {
-            const companyUser = await this.prisma.companyUser.findFirst({
-                where: {
-                    companyId: data.companyId,
-                    userId: data.userId,
-                    status: 'APPROVED'
-                }
-            })
-
-            if (companyUser === null || companyUser === undefined ) throw new ForbiddenException('현재 소속된 기업이 존재하지 않습니다.');
-
             const coupon = await this.prisma.coupon.findFirst({
                 where: {
-                    companyId: data.companyId,
-                    restaurantId: data.restaurantId
+                    id: data.couponId
                 }
             })
 
@@ -190,13 +179,13 @@ export class CouponService {
                 data: { count: coupon.count - 1 }
             })
 
-            await this.prisma.usageHistory.create({
-                data: {
-                    coupon: { connect: { id: coupon.id }},
-                    restaurant: { connect: { id: data.restaurantId }},
-                    user: { connect: { id: data.userId }}
-                }
-            })
+            // await this.prisma.usageHistory.create({
+            //     data: {
+            //         coupon: { connect: { id: coupon.id }},
+            //         restaurant: { connect: { id: data.restaurantId }},
+            //         user: { connect: { id: data.userId }}
+            //     }
+            // })
 
             return {
                 success: true,
