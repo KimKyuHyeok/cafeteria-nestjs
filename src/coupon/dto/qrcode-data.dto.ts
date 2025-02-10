@@ -5,13 +5,5 @@ import { IsNotEmpty } from "class-validator";
 export class QrDataDto {
     @Field()
     @IsNotEmpty()
-    restaurantId: number;
-
-    @Field()
-    @IsNotEmpty()
-    companyId: number;
-
-    @Field()
-    @IsNotEmpty()
-    userId: number;
+    couponId: number;
 }
