@@ -1,0 +1,211 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Auth {
+  """access token"""
+  accessToken: JWT!
+
+  """refresh token"""
+  refreshToken: JWT!
+}
+
+"""
+A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
+"""
+scalar JWT
+
+type CompanyUserResponse {
+  success: Boolean!
+  message: String!
+}
+
+type userWithCompanyDto {
+  id: Float!
+  name: String!
+  phoneNumber: String!
+  email: String!
+  status: String!
+  companyUserId: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Company {
+  """고유 아이디"""
+  id: ID
+
+  """생성일"""
+  createdAt: DateTime
+
+  """수정일"""
+  updatedAt: DateTime
+  name: String!
+  password: String!
+  registrationNumber: String!
+  manager: String!
+}
+
+type QRCodeResponseDto {
+  url: String!
+}
+
+type Coupon {
+  """고유 아이디"""
+  id: ID
+
+  """생성일"""
+  createdAt: DateTime
+
+  """수정일"""
+  updatedAt: DateTime
+  companyId: Float!
+  restaurantId: Float!
+  paymentsId: Float!
+  count: Float!
+}
+
+type CouponResponse {
+  success: Boolean!
+  message: String!
+}
+
+type RestaurantWithCouponsDto {
+  id: Float!
+  name: String!
+  address: String!
+  coupon: [CouponDto!]!
+}
+
+type CouponDto {
+  count: Float!
+  restaurantId: Float!
+  companyId: Float!
+}
+
+type Restaurant {
+  """고유 아이디"""
+  id: ID
+
+  """생성일"""
+  createdAt: DateTime
+
+  """수정일"""
+  updatedAt: DateTime
+  name: String!
+  address: String!
+  price: Float!
+}
+
+type Payments {
+  """고유 아이디"""
+  id: ID
+
+  """생성일"""
+  createdAt: DateTime
+
+  """수정일"""
+  updatedAt: DateTime
+  companyId: Float!
+  orderId: String!
+  amount: Float!
+  paymentMethod: String!
+  paymentStatus: String!
+  transactionId: String!
+  paymentDate: DateTime!
+}
+
+type Query {
+  appServer: String!
+  restaurantFindByAddress(keyword: String!): [Restaurant!]!
+  userWithCompanyListAll: [userWithCompanyDto!]!
+  userWithCompanyListByPending: [userWithCompanyDto!]!
+  userWithCompanyListByApproved: [userWithCompanyDto!]!
+  userWithCompanyListByRejected: [userWithCompanyDto!]!
+  companyListSearch(keyword: String!): [Company!]!
+  couponsFindByCompanyId: [RestaurantWithCouponsDto!]!
+  couponsFindByUserId: [RestaurantWithCouponsDto!]!
+  couponSelectByCompanyId(data: CouponSelectDto!): Float!
+  generateQrCode(data: CouponUseDto!): QRCodeResponseDto!
+  selectPayments: [Payments!]!
+}
+
+input CouponSelectDto {
+  restaurantId: Float!
+}
+
+input CouponUseDto {
+  companyId: Float!
+  restaurantId: Float!
+}
+
+type Mutation {
+  storeSignin(data: StoreInput!): Auth!
+  storeSignup(data: StoreInput!): Auth!
+  signup(data: CompanySignupInput!): Auth!
+  signin(data: CompanySigninInput!): Auth!
+  userApproved(data: CompanyJoinRequestDto!): CompanyUserResponse!
+  userRejected(data: CompanyJoinRequestDto!): CompanyUserResponse!
+  userCompanyDelete(data: CompanyUserDto!): CompanyUserResponse!
+  userSignup(data: UserSignupInput!): Auth!
+  userSignin(data: UserSigninInput!): Auth!
+  companyUserJoinRequest(data: CompanyUserJoinRequestDto!): CompanyUserResponse!
+  couponCharge(data: CouponChargeDto!): Coupon!
+  couponUse(data: CouponUseDto!): CouponResponse!
+}
+
+input StoreInput {
+  name: String!
+  password: String!
+}
+
+input CompanySignupInput {
+  name: String!
+  password: String!
+  registrationNumber: String!
+  manager: String!
+}
+
+input CompanySigninInput {
+  registrationNumber: String!
+  password: String!
+}
+
+input CompanyJoinRequestDto {
+  userId: Float!
+  name: String!
+  email: String!
+}
+
+input CompanyUserDto {
+  id: Float!
+  userId: Float!
+}
+
+input UserSignupInput {
+  name: String!
+  phoneNumber: String!
+  email: String!
+  password: String!
+}
+
+input UserSigninInput {
+  email: String!
+  password: String!
+}
+
+input CompanyUserJoinRequestDto {
+  companyId: Float!
+}
+
+input CouponChargeDto {
+  companyId: Float!
+  restaurantId: Float!
+  paymentsId: Float!
+  count: Float!
+}
