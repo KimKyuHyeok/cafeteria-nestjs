@@ -62,7 +62,7 @@ jobs:
               if [ $(docker ps -aq -f name=siggwon-prd) ]; then
                 echo "Stopping and removing existing siggwon-prd container.."
                 docker stop siggwon-prd || true
-                docker rm bogle-prd || true
+                docker rm siggwon-prd || true
               else
                 echo "No running container found for siggwon-prd."
               fi
