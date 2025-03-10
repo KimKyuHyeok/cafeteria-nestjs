@@ -1,6 +1,6 @@
 services:
   siggwon-prd:
-    image: devkyu/siggwon-moa:v1
+    image: devkyu96/siggwon-moa:v1
     container_name: siggwon-prd
     restart: always
     environment:
@@ -16,4 +16,3 @@ services:
       VUE_SERVER: ${VUE_SERVER}
     ports:
       - "80:80"
-      
