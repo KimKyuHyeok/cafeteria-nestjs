@@ -15,4 +15,5 @@ services:
       JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
       VUE_SERVER: ${VUE_SERVER}
     ports:
-      - "80:80"
+      - "80:3000"
+      
