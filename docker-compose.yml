@@ -1,0 +1,19 @@
+services:
+  siggwon-prd:
+    image: devkyu/siggwon-moa:v1
+    container_name: siggwon-prd
+    restart: always
+    environment:
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DB: "${MYSQL_DB}"
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT}"
+      DATABASE_URL: "${DATABASE_URL}"
+      BCRYPT_SALT_ROUNDS: "${BCRYPT_SALT_ROUNDS}"
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      VUE_SERVER: ${VUE_SERVER}
+    ports:
+      - "80:80"
+      
