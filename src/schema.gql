@@ -156,7 +156,7 @@ type Mutation {
   userSignin(data: UserSigninInput!): Auth!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): CompanyUserResponse!
   couponCharge(data: CouponChargeDto!): Coupon!
-  couponUse(data: CouponUseDto!): CouponResponse!
+  couponUse(qrData: QrDataDto!): CouponResponse!
 }
 
 input StoreInput {
@@ -208,4 +208,8 @@ input CouponChargeDto {
   restaurantId: Float!
   paymentsId: Float!
   count: Float!
+}
+
+input QrDataDto {
+  couponId: Float!
 }

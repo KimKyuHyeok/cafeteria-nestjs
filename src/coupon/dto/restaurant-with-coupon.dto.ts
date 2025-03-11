@@ -1,37 +1,34 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { IsNotEmpty } from "class-validator";
-import { Coupon } from "../model/coupon.model";
+import { Field, ObjectType } from '@nestjs/graphql';
+import { IsNotEmpty } from 'class-validator';
 
 @ObjectType()
 export class RestaurantWithCouponsDto {
+  @Field()
+  @IsNotEmpty()
+  id: number;
 
-    @Field()
-    @IsNotEmpty()
-    id: number;
+  @Field()
+  @IsNotEmpty()
+  name: string;
 
-    @Field()
-    @IsNotEmpty()
-    name: string;
+  @Field()
+  @IsNotEmpty()
+  address: string;
 
-    @Field()
-    @IsNotEmpty()
-    address: string;
-
-    @Field(() => [CouponDto])
-    coupon: CouponDto[]
+  @Field(() => [CouponDto])
+  coupon: CouponDto[];
 }
-
 
 @ObjectType()
 class CouponDto {
-    @Field()
-    count: number;
+  @Field()
+  count: number;
 
-    @Field()
-    @IsNotEmpty()
-    restaurantId: number;
+  @Field()
+  @IsNotEmpty()
+  restaurantId: number;
 
-    @Field()
-    @IsNotEmpty()
-    companyId: number;
+  @Field()
+  @IsNotEmpty()
+  companyId: number;
 }

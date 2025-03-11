@@ -6,25 +6,27 @@ import { Auth } from 'src/company/model/auth.model';
 
 @Resolver()
 export class StoreResolver {
-    constructor(private readonly storeService: StoreService) {}
+  constructor(private readonly storeService: StoreService) {}
 
-    @Mutation(() => Auth)
-    async storeSignin(@Args('data') data: StoreInput): Promise<Token> {
-        const { accessToken, refreshToken } = await this.storeService.storeSignin(data);
+  @Mutation(() => Auth)
+  async storeSignin(@Args('data') data: StoreInput): Promise<Token> {
+    const { accessToken, refreshToken } =
+      await this.storeService.storeSignin(data);
 
-        return { 
-            accessToken,
-            refreshToken
-        }
-    }
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
 
-    @Mutation(() => Auth)
-    async storeSignup(@Args('data') data: StoreInput): Promise<Token> {
-        const { accessToken, refreshToken } = await this.storeService.storeSignup(data);
+  @Mutation(() => Auth)
+  async storeSignup(@Args('data') data: StoreInput): Promise<Token> {
+    const { accessToken, refreshToken } =
+      await this.storeService.storeSignup(data);
 
-        return { 
-            accessToken,
-            refreshToken
-        }
-    }
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
 }

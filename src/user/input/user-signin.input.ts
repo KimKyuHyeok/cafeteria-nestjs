@@ -2,12 +2,12 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
-export class CouponUseDto {
-  @Field()
+export class UserSigninInput {
+  @Field(() => String)
   @IsNotEmpty()
-  companyId: number;
+  email: string;
 
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
-  restaurantId: number;
+  password: string;
 }

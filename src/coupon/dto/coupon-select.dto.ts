@@ -1,9 +1,9 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsNotEmpty } from "class-validator";
+import { Field, InputType } from '@nestjs/graphql';
+import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CouponSelectDto {
-    @Field()
-    @IsNotEmpty()
-    restaurantId: number; 
+  @Field()
+  @IsNotEmpty()
+  restaurantId: number;
 }
