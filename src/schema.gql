@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
+type Token {
   """access token"""
   accessToken: JWT!
 
@@ -14,6 +14,14 @@ type Auth {
 A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
 """
 scalar JWT
+
+type Auth {
+  """access token"""
+  accessToken: JWT!
+
+  """refresh token"""
+  refreshToken: JWT!
+}
 
 type CompanyUserResponse {
   success: Boolean!
@@ -45,10 +53,16 @@ type Company {
 
   """수정일"""
   updatedAt: DateTime
-  name: String!
+  email: String!
+  companyName: String!
   password: String!
   registrationNumber: String!
   manager: String!
+}
+
+type BaseResponseDto {
+  success: Boolean!
+  message: String!
 }
 
 type QRCodeResponseDto {
@@ -152,9 +166,9 @@ type Mutation {
   userApproved(data: CompanyJoinRequestDto!): CompanyUserResponse!
   userRejected(data: CompanyJoinRequestDto!): CompanyUserResponse!
   userCompanyDelete(data: CompanyUserDto!): CompanyUserResponse!
-  userSignup(data: UserSignupInput!): Auth!
-  userSignin(data: UserSigninInput!): Auth!
-  companyUserJoinRequest(data: CompanyUserJoinRequestDto!): CompanyUserResponse!
+  userSignup(data: UserSignupInput!): Token!
+  userSignin(data: UserSigninInput!): Token!
+  companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
   couponCharge(data: CouponChargeDto!): Coupon!
   couponUse(qrData: QrDataDto!): CouponResponse!
 }
