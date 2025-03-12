@@ -4,9 +4,14 @@ import { BaseModel } from 'src/common/models/base.model';
 
 @ObjectType()
 export class Company extends BaseModel {
+
   @Field(() => String)
   @IsNotEmpty()
-  name: string;
+  email: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  companyName: string;
 
   @Field(() => String)
   @IsNotEmpty()
