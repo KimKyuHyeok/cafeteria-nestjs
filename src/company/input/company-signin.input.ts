@@ -5,7 +5,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CompanySigninInput {
   @Field()
   @IsNotEmpty()
-  registrationNumber: string;
+  email: string;
 
   @Field()
   @IsNotEmpty()
