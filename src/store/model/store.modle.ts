@@ -10,6 +10,10 @@ export class Store extends BaseModel {
 
   @Field()
   @IsNotEmpty()
+  email: string;
+
+  @Field()
+  @IsNotEmpty()
   password: string;
 
   @Field()
