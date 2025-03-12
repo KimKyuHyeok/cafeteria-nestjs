@@ -16,40 +16,53 @@ import { QrDataDto } from './dto/qrcode-data.dto';
 
 @Resolver()
 export class CouponResolver {
-    constructor(private readonly couponService: CouponService) {}
+  constructor(private readonly couponService: CouponService) {}
 
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [RestaurantWithCouponsDto])
-    async couponsFindByCompanyId(@CompanyEntity() company: any): Promise<RestaurantWithCouponsDto[]> {
-        return await this.couponService.couponsFindByCompanyId(company);
-    }
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [RestaurantWithCouponsDto])
+  async couponsFindByCompanyId(
+    @CompanyEntity() company: any,
+  ): Promise<RestaurantWithCouponsDto[]> {
+    return await this.couponService.couponsFindByCompanyId(company);
+  }
 
-    @UseGuards(GqlUserAuthGuard)
-    @Query(() => [RestaurantWithCouponsDto])
-    async couponsFindByUserId(@UserEntity() user: any): Promise<RestaurantWithCouponsDto[]> {
-        return await this.couponService.couponsFindByUserId(user);
-    }
+  @UseGuards(GqlUserAuthGuard)
+  @Query(() => [RestaurantWithCouponsDto])
+  async couponsFindByUserId(
+    @UserEntity() user: any,
+  ): Promise<RestaurantWithCouponsDto[]> {
+    return await this.couponService.couponsFindByUserId(user);
+  }
 
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => Number)
-    async couponSelectByCompanyId(@CompanyEntity() company: any, @Args('data') data: CouponSelectDto): Promise<Number> {
-        return await this.couponService.couponSelectByCompanyId(company, data);        
-    }
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => Number)
+  async couponSelectByCompanyId(
+    @CompanyEntity() company: any,
+    @Args('data') data: CouponSelectDto,
+  ): Promise<number> {
+    return await this.couponService.couponSelectByCompanyId(company, data);
+  }
 
-    @UseGuards(GqlCompanyAuthGuard)
-    @Mutation(() => Coupon)
-    async couponCharge(@Args('data') data: CouponChargeDto, @CompanyEntity() company: any): Promise<Coupon> {
-        return await this.couponService.couponCharge(data, company);
-    }
+  @UseGuards(GqlCompanyAuthGuard)
+  @Mutation(() => Coupon)
+  async couponCharge(
+    @Args('data') data: CouponChargeDto,
+    @CompanyEntity() company: any,
+  ): Promise<Coupon> {
+    return await this.couponService.couponCharge(data, company);
+  }
 
-    @Mutation(() => CouponResponse)
-    async couponUse(@Args('qrData') data: QrDataDto): Promise<CouponResponse> {
-        return await this.couponService.couponUse(data);
-    }
+  @Mutation(() => CouponResponse)
+  async couponUse(@Args('qrData') data: QrDataDto): Promise<CouponResponse> {
+    return await this.couponService.couponUse(data);
+  }
 
-    @UseGuards(GqlUserAuthGuard)
-    @Query(() => QRCodeResponseDto)
-    async generateQrCode(@Args('data') data: CouponUseDto, @UserEntity() user: any): Promise<QRCodeResponseDto> {
-        return await this.couponService.generateQrCode(data, user);
-    }
+  @UseGuards(GqlUserAuthGuard)
+  @Query(() => QRCodeResponseDto)
+  async generateQrCode(
+    @Args('data') data: CouponUseDto,
+    @UserEntity() user: any,
+  ): Promise<QRCodeResponseDto> {
+    return await this.couponService.generateQrCode(data, user);
+  }
 }

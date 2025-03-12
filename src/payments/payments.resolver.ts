@@ -7,11 +7,11 @@ import { UseGuards } from '@nestjs/common';
 
 @Resolver()
 export class PaymentsResolver {
-    constructor(private readonly paymentsService: PaymentsService) {}
+  constructor(private readonly paymentsService: PaymentsService) {}
 
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [Payments])
-    async selectPayments(@CompanyEntity() company: any): Promise<Payments[]> {
-        return this.paymentsService.selectPayments(company.id);
-    }
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [Payments])
+  async selectPayments(@CompanyEntity() company: any): Promise<Payments[]> {
+    return this.paymentsService.selectPayments(company.id);
+  }
 }

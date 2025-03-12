@@ -91,6 +91,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "jest": {
+      "transformIgnorePatterns": ["/node_modules/", "/__generated__/fabbrica/"]
+    },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

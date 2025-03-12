@@ -39,12 +39,12 @@ import { join } from 'path';
           loggingMiddleware({
             logger: new Logger('PrismaMiddleware'),
             logLevel: 'log',
-          })
-        ]
-      }
+          }),
+        ],
+      },
     }),
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     CompanyModule,
     UserModule,
@@ -55,18 +55,18 @@ import { join } from 'path';
     StoreModule,
   ],
   providers: [
-    AppResolver, 
-    CompanyService, 
-    UserService, 
-    JwtCompanyStrategy, 
-    JwtUserStrategy, 
-    PasswordService, 
-    JwtService, 
-    RestaurantResolver, 
-    RestaurantService, 
-    UsageHistoryResolver, 
-    StoreResolver, 
-    StoreService
+    AppResolver,
+    CompanyService,
+    UserService,
+    JwtCompanyStrategy,
+    JwtUserStrategy,
+    PasswordService,
+    JwtService,
+    RestaurantResolver,
+    RestaurantService,
+    UsageHistoryResolver,
+    StoreResolver,
+    StoreService,
   ],
 })
 export class AppModule {}

@@ -14,79 +14,92 @@ import { CompanyUserDto } from './dto/companyUser.dto';
 
 @Resolver()
 export class CompanyResolver {
-    constructor(private readonly companyService: CompanyService) {}
+  constructor(private readonly companyService: CompanyService) {}
 
-    @Mutation(() => Auth)
-    async signup(@Args('data') data: CompanySignupInput) {
-        const { accessToken, refreshToken } = await this.companyService.createCompany(data);
+  @Mutation(() => Auth)
+  async signup(@Args('data') data: CompanySignupInput) {
+    const { accessToken, refreshToken } =
+      await this.companyService.createCompany(data);
 
-        return {
-            accessToken,
-            refreshToken
-        }
-    }
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
 
-    @Mutation(() => Auth)
-    async signin(@Args('data') data: CompanySigninInput): Promise<Token> {
+  @Mutation(() => Auth)
+  async signin(@Args('data') data: CompanySigninInput): Promise<Token> {
+    const { accessToken, refreshToken } =
+      await this.companyService.signin(data);
 
-        const { accessToken, refreshToken } = await this.companyService.signin(data);
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
 
-        return {
-            accessToken,
-            refreshToken
-        }
-    }
+  // 가입 승인
+  @UseGuards(GqlCompanyAuthGuard)
+  @Mutation(() => CompanyUserResponse)
+  async userApproved(
+    @Args('data') data: CompanyJoinRequestDto,
+    @CompanyEntity() company: any,
+  ): Promise<CompanyUserResponse> {
+    return await this.companyService.userApproved(data, company);
+  }
 
-    // 가입 승인
-    @UseGuards(GqlCompanyAuthGuard)
-    @Mutation(() => CompanyUserResponse)
-    async userApproved(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
-        return await this.companyService.userApproved(data, company);
-    }
+  // 가입 거절
+  @UseGuards(GqlCompanyAuthGuard)
+  @Mutation(() => CompanyUserResponse)
+  async userRejected(
+    @Args('data') data: CompanyJoinRequestDto,
+    @CompanyEntity() company: any,
+  ): Promise<CompanyUserResponse> {
+    return await this.companyService.userRejected(data, company);
+  }
 
-    // 가입 거절
-    @UseGuards(GqlCompanyAuthGuard)
-    @Mutation(() => CompanyUserResponse)
-    async userRejected(@Args('data') data: CompanyJoinRequestDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
-        return await this.companyService.userRejected(data, company);
-    }
+  // 가입 요청 리스트
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [userWithCompanyDto])
+  async userWithCompanyListAll(
+    @CompanyEntity() company: any,
+  ): Promise<userWithCompanyDto[]> {
+    return this.companyService.userWithCompanyListAll(company);
+  }
 
-    // 가입 요청 리스트
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [userWithCompanyDto])
-    async userWithCompanyListAll(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
-        return this.companyService.userWithCompanyListAll(company);
-    }
+  // 승인 대기 리스트
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [userWithCompanyDto])
+  async userWithCompanyListByPending(
+    @CompanyEntity() company: any,
+  ): Promise<userWithCompanyDto[]> {
+    return this.companyService.userWithCompanyListByPending(company);
+  }
 
-    // 승인 대기 리스트
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [userWithCompanyDto])
-    async userWithCompanyListByPending(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
-        return this.companyService.userWithCompanyListByPending(company);
-    }
+  // 승인 완료 리스트
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [userWithCompanyDto])
+  async userWithCompanyListByApproved(
+    @CompanyEntity() company: any,
+  ): Promise<userWithCompanyDto[]> {
+    return this.companyService.userWithCompanyListByApproved(company);
+  }
 
-    // 승인 완료 리스트
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [userWithCompanyDto])
-    async userWithCompanyListByApproved(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
-        return this.companyService.userWithCompanyListByApproved(company);
-    }
+  // 승인 거절 리스트
+  @UseGuards(GqlCompanyAuthGuard)
+  @Query(() => [userWithCompanyDto])
+  async userWithCompanyListByRejected(
+    @CompanyEntity() company: any,
+  ): Promise<userWithCompanyDto[]> {
+    return this.companyService.userWithCompanyListByRejected(company);
+  }
 
-    // 승인 거절 리스트
-    @UseGuards(GqlCompanyAuthGuard)
-    @Query(() => [userWithCompanyDto])
-    async userWithCompanyListByRejected(@CompanyEntity() company: any): Promise<userWithCompanyDto[]> {
-        return this.companyService.userWithCompanyListByRejected(company);
-    }
-
-    @UseGuards(GqlCompanyAuthGuard)
-    @Mutation(() => CompanyUserResponse)
-    async userCompanyDelete(@Args('data') data: CompanyUserDto, @CompanyEntity() company: any): Promise<CompanyUserResponse> {
-        return this.companyService.userCompanyDelete(data, company);
-    }
-
-
-    
-
-
+  @UseGuards(GqlCompanyAuthGuard)
+  @Mutation(() => CompanyUserResponse)
+  async userCompanyDelete(
+    @Args('data') data: CompanyUserDto,
+    @CompanyEntity() company: any,
+  ): Promise<CompanyUserResponse> {
+    return this.companyService.userCompanyDelete(data, company);
+  }
 }

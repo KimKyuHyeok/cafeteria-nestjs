@@ -1,10 +1,9 @@
-import { ExecutionContext, createParamDecorator } from "@nestjs/common";
-import { GqlExecutionContext } from "@nestjs/graphql";
+import { ExecutionContext, createParamDecorator } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 export const CompanyEntity = createParamDecorator(
-    (data: unknown, ctx: ExecutionContext) => {
-      const company = GqlExecutionContext.create(ctx).getContext().req.user;
-      return company;
-    }
-  );
-  
+  (data: unknown, ctx: ExecutionContext) => {
+    const company = GqlExecutionContext.create(ctx).getContext().req.user;
+    return company;
+  },
+);
