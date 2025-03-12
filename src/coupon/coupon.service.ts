@@ -1,19 +1,20 @@
 import { PrismaService } from 'nestjs-prisma';
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CouponChargeDto } from './dto/coupon-charge.dto';
 import { Coupon } from './model/coupon.model';
 import { CouponUseDto } from './dto/coupon-use.dto';
-import { CouponResponse } from './dto/coupon.response';
 import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
 import QRCode from 'qrcode';
 import { QRCodeResponseDto } from './dto/qrcode-response.dto';
 import { QrDataDto } from './dto/qrcode-data.dto';
+import { BaseResponseDto } from 'src/common/dto/base-response.dto';
+import { Status } from '@prisma/client';
 
 @Injectable()
 export class CouponService {
@@ -180,13 +181,23 @@ export class CouponService {
   }
 
   // 잔여 쿠폰 확인 후 차감
-  async couponUse(data: QrDataDto, user: any): Promise<CouponResponse> {
+  async couponUse(data: QrDataDto, user: any): Promise<BaseResponseDto> {
 
     const coupon = await this.prisma.coupon.findFirst({
       where: {
         id: data.couponId,
       },
     });
+
+    const existingCompanyUser = await this.prisma.companyUser.findFirst({
+      where: {
+        companyId: coupon.companyId,
+        userId: user.id,
+        status: Status.APPROVED
+      }
+    })
+
+    if (!existingCompanyUser) throw new UnauthorizedException('현재 소속된 기업이 존재하지 않습니다.')
 
     if (coupon.count < 1)
       throw new NotFoundException('잔여 식권 수량이 부족합니다.');
