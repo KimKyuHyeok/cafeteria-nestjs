@@ -1,23 +1,22 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { Auth } from 'src/company/model/auth.model';
 import { UserSignupInput } from './input/user-signup.input';
 import { Token } from 'src/common/auth/model/token.model';
 import { UserSigninInput } from './input/user-signin.input';
 import { UserEntity } from 'src/common/decorators/user.decorator';
-import { CompanyUserResponse } from 'src/company/dto/companyUser.response';
-import { CompanyUserJoinRequestDto } from './dto/companyUserJoinRequest.dto';
+import { CompanyUserJoinRequestDto } from './dto/company-user-join.request';
 import { UseGuards } from '@nestjs/common';
 import { GqlUserAuthGuard } from 'src/company/gql-user-auth.guard';
 import { Company } from 'src/company/model/company.model';
+import { BaseResponseDto } from 'src/common/dto/base-response.dto';
 
 @Resolver()
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => Auth)
+  @Mutation(() => Token)
   async userSignup(@Args('data') data: UserSignupInput): Promise<Token> {
-    const { accessToken, refreshToken } = await this.userService.signup(data);
+    const { accessToken, refreshToken } = await this.userService.userSignup(data);
 
     return {
       accessToken,
@@ -25,9 +24,9 @@ export class UserResolver {
     };
   }
 
-  @Mutation(() => Auth)
+  @Mutation(() => Token)
   async userSignin(@Args('data') data: UserSigninInput): Promise<Token> {
-    const { accessToken, refreshToken } = await this.userService.signin(data);
+    const { accessToken, refreshToken } = await this.userService.userSignin(data);
 
     return {
       accessToken,
@@ -36,11 +35,11 @@ export class UserResolver {
   }
 
   @UseGuards(GqlUserAuthGuard)
-  @Mutation(() => CompanyUserResponse)
+  @Mutation(() => BaseResponseDto)
   async companyUserJoinRequest(
     @Args('data') data: CompanyUserJoinRequestDto,
     @UserEntity() user: any,
-  ): Promise<CompanyUserResponse> {
+  ): Promise<BaseResponseDto> {
     return await this.userService.companyUserJoinRequest(data, user);
   }
 
