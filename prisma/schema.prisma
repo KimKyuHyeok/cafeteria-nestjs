@@ -19,9 +19,10 @@ enum Status {
 
 model Company {
   id  Int   @id() @default(autoincrement())
-  name String
+  email String @unique()
+  companyName String
   password String
-  registrationNumber String @unique()
+  registrationNumber String
   manager   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
@@ -128,6 +129,7 @@ model UsageHistory {
 
 model Store {
   id  Int   @id @default(autoincrement())
+  email String @unique()
   name  String
   password  String
   createdAt   DateTime @default(now())
