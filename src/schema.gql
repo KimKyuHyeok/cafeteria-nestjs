@@ -71,11 +71,6 @@ type Coupon {
   count: Float!
 }
 
-type CouponResponse {
-  success: Boolean!
-  message: String!
-}
-
 type RestaurantWithCouponsDto {
   id: Float!
   name: String!
@@ -165,7 +160,7 @@ type Mutation {
   userSignin(data: UserSigninInput!): Token!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
   couponCharge(data: CouponChargeDto!): Coupon!
-  couponUse(qrData: QrDataDto!): CouponResponse!
+  couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
 
 input StoreInput {
