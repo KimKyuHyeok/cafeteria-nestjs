@@ -3,7 +3,6 @@ import { CouponService } from './coupon.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Coupon } from './model/coupon.model';
 import { CouponChargeDto } from './dto/coupon-charge.dto';
-import { CouponResponse } from './dto/coupon.response';
 import { CouponUseDto } from './dto/coupon-use.dto';
 import { UserEntity } from 'src/common/decorators/user.decorator';
 import { UseGuards } from '@nestjs/common';
@@ -13,6 +12,7 @@ import { CouponSelectDto } from './dto/coupon-select.dto';
 import { RestaurantWithCouponsDto } from './dto/restaurant-with-coupon.dto';
 import { QRCodeResponseDto } from './dto/qrcode-response.dto';
 import { QrDataDto } from './dto/qrcode-data.dto';
+import { BaseResponseDto } from 'src/common/dto/base-response.dto';
 
 @Resolver()
 export class CouponResolver {
@@ -52,9 +52,10 @@ export class CouponResolver {
     return await this.couponService.couponCharge(data, company);
   }
 
-  @Mutation(() => CouponResponse)
-  async couponUse(@Args('qrData') data: QrDataDto): Promise<CouponResponse> {
-    return await this.couponService.couponUse(data);
+  @UseGuards(GqlUserAuthGuard)
+  @Mutation(() => BaseResponseDto)
+  async couponUse(@Args('qrData') data: QrDataDto, @UserEntity() user: any): Promise<BaseResponseDto> {
+    return await this.couponService.couponUse(data, user);
   }
 
   @UseGuards(GqlUserAuthGuard)

@@ -94,21 +94,19 @@ describe('coupon-company', () => {
   });
 
   it('When a valid request is sent to couponUse, it returns success and message, and then checks if the coupon quantity has been deducted.', async () => {
+    const couponId = coupon1.id;
+    
     const response = await request(user).send({
       query: `
-                mutation couponUse($data: CouponUseDto!) {
-                    couponUse(data: $data) {
+                mutation couponUse($qrData: QrDataDto!) {
+                    couponUse(qrData: $qrData) {
                         success
                         message
                     }
                 }
             `,
       variables: {
-        data: {
-          companyId: company.id,
-          restaurantId: restaurant.id,
-          userId: user.id,
-        },
+        qrData: { couponId }
       },
     });
 
@@ -121,21 +119,18 @@ describe('coupon-company', () => {
   });
 
   it('When a user without permission sends a request to CouponUse, then an error message is returned.', async () => {
+    const couponId = coupon1.id;
     const response = await request(unauthorizedUser).send({
       query: `
-                mutation couponUse($data: CouponUseDto!) {
-                    couponUse(data: $data) {
+                mutation couponUse($qrData: QrDataDto!) {
+                    couponUse(qrData: $qrData) {
                         success
                         message
                     }
                 }
             `,
       variables: {
-        data: {
-          companyId: company.id,
-          restaurantId: restaurant.id,
-          userId: unauthorizedUser.id,
-        },
+        qrData: { couponId }
       },
     });
 
