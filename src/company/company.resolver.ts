@@ -1,23 +1,22 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CompanyService } from './company.service';
-import { CompanySignupInput } from './dto/company-signup.input';
-import { Auth } from './model/auth.model';
+import { CompanySignupInput } from './input/company-signup.input';
 import { CompanyEntity } from 'src/common/decorators/company.decorator';
 import { CompanyJoinRequestDto } from './dto/company-join.request';
 import { UseGuards } from '@nestjs/common';
 import { GqlCompanyAuthGuard } from './gql-company-auth.guard';
-import { CompanyUserResponse } from './dto/companyUser.response';
-import { CompanySigninInput } from './dto/company-signin.input';
+import { CompanySigninInput } from './input/company-signin.input';
 import { Token } from 'src/common/auth/model/token.model';
 import { userWithCompanyDto } from './dto/user-with-company.dto';
 import { CompanyUserDto } from './dto/companyUser.dto';
+import { BaseResponseDto } from 'src/common/dto/base-response.dto';
 
 @Resolver()
 export class CompanyResolver {
   constructor(private readonly companyService: CompanyService) {}
 
-  @Mutation(() => Auth)
-  async signup(@Args('data') data: CompanySignupInput) {
+  @Mutation(() => Token)
+  async companySignup(@Args('data') data: CompanySignupInput) {
     const { accessToken, refreshToken } =
       await this.companyService.createCompany(data);
 
@@ -27,10 +26,10 @@ export class CompanyResolver {
     };
   }
 
-  @Mutation(() => Auth)
-  async signin(@Args('data') data: CompanySigninInput): Promise<Token> {
+  @Mutation(() => Token)
+  async companySignin(@Args('data') data: CompanySigninInput): Promise<Token> {
     const { accessToken, refreshToken } =
-      await this.companyService.signin(data);
+      await this.companyService.companySignin(data);
 
     return {
       accessToken,
@@ -40,21 +39,21 @@ export class CompanyResolver {
 
   // 가입 승인
   @UseGuards(GqlCompanyAuthGuard)
-  @Mutation(() => CompanyUserResponse)
+  @Mutation(() => BaseResponseDto)
   async userApproved(
     @Args('data') data: CompanyJoinRequestDto,
     @CompanyEntity() company: any,
-  ): Promise<CompanyUserResponse> {
+  ): Promise<BaseResponseDto> {
     return await this.companyService.userApproved(data, company);
   }
 
   // 가입 거절
   @UseGuards(GqlCompanyAuthGuard)
-  @Mutation(() => CompanyUserResponse)
+  @Mutation(() => BaseResponseDto)
   async userRejected(
     @Args('data') data: CompanyJoinRequestDto,
     @CompanyEntity() company: any,
-  ): Promise<CompanyUserResponse> {
+  ): Promise<BaseResponseDto> {
     return await this.companyService.userRejected(data, company);
   }
 
@@ -95,11 +94,11 @@ export class CompanyResolver {
   }
 
   @UseGuards(GqlCompanyAuthGuard)
-  @Mutation(() => CompanyUserResponse)
+  @Mutation(() => BaseResponseDto)
   async userCompanyDelete(
     @Args('data') data: CompanyUserDto,
     @CompanyEntity() company: any,
-  ): Promise<CompanyUserResponse> {
+  ): Promise<BaseResponseDto> {
     return this.companyService.userCompanyDelete(data, company);
   }
 }

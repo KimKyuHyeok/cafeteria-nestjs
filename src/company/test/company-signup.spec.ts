@@ -12,7 +12,8 @@ describe('signup', () => {
   // Then : accessToken 과 refreshToken 을 반환한다.
   it('when you request Company membership with the correct information then AccessToken and RefreshToken are returned.', async () => {
     const data = {
-      name: 'Kim',
+      companyName: 'Kim',
+      email: 'siggwon@test.net',
       registrationNumber: '123-1234-123',
       password: 'Password123@',
       manager: 'James',
@@ -20,8 +21,8 @@ describe('signup', () => {
 
     const response = await request().send({
       query: `
-                mutation signup($data: CompanySignupInput!) {
-                    signup(data: $data) {
+                mutation companySignup($data: CompanySignupInput!) {
+                  companySignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -34,7 +35,7 @@ describe('signup', () => {
     expect(response).toBeDefined();
     expect(response.status).toBe(200);
 
-    const { accessToken, refreshToken } = response.body.data.signup;
+    const { accessToken, refreshToken } = response.body.data.companySignup;
     expect(accessToken).toBeDefined();
     expect(refreshToken).toBeDefined();
   });
@@ -43,7 +44,8 @@ describe('signup', () => {
   // Then: 에러 메시지를 반환한다.
   it('when a SignUp request is made using a password with an incorrect format then an error message is returned.', async () => {
     const data = {
-      name: 'Kim',
+      companyName: 'Kim',
+      email: 'siggwon-moa@test.com',
       registrationNumber: '123-1234-123',
       password: 'Pass123',
       manager: 'James',
@@ -51,8 +53,8 @@ describe('signup', () => {
 
     const response = await request().send({
       query: `
-                mutation signup($data: CompanySignupInput!) {
-                    signup(data: $data) {
+                mutation companySignup($data: CompanySignupInput!) {
+                  companySignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -69,11 +71,12 @@ describe('signup', () => {
     );
   });
 
-  // When: 이미 등록된 사업자 번호를 입력하면
+  // When: 이미 등록된 이메일을 입력하면
   // Then: 에러 메시지를 반환한다.
   it('when a SignUp request is made with an already registered business number then an error message is returned.', async () => {
     const data = {
-      name: 'Kim',
+      companyName: 'Kim',
+      email: 'company@test.net',
       registrationNumber: '123-123-123',
       password: 'Password1234@@',
       manager: 'James',
@@ -81,8 +84,8 @@ describe('signup', () => {
 
     const response = await request().send({
       query: `
-                mutation signup($data: CompanySignupInput!) {
-                    signup(data: $data) {
+                mutation companySignup($data: CompanySignupInput!) {
+                  companySignup(data: $data) {
                         accessToken
                         refreshToken
                     }
@@ -92,6 +95,6 @@ describe('signup', () => {
         data: data,
       },
     });
-    expectErrorMessage(response.body, '이미 등록된 사업자 번호 입니다.');
+    expectErrorMessage(response.body, '이미 등록된 이메일 입니다.');
   });
 });

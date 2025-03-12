@@ -5,7 +5,11 @@ import { IsNotEmpty } from 'class-validator';
 export class CompanySignupInput {
   @Field(() => String)
   @IsNotEmpty()
-  name: string;
+  companyName: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  email: string;
 
   @Field(() => String)
   @IsNotEmpty()

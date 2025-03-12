@@ -1,21 +1,20 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Company } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
-import { CompanySignupInput } from './dto/company-signup.input';
+import { CompanySignupInput } from './input/company-signup.input';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from 'src/common/auth/password.service';
 import { Token } from 'src/common/auth/model/token.model';
 import { CompanyJoinRequestDto } from './dto/company-join.request';
-import { CompanyUserResponse } from './dto/companyUser.response';
-import { PrismaClientValidationError } from '@prisma/client/runtime/library';
-import { CompanySigninInput } from './dto/company-signin.input';
+import { CompanySigninInput } from './input/company-signin.input';
 import { userWithCompanyDto } from './dto/user-with-company.dto';
 import { CompanyUserDto } from './dto/companyUser.dto';
+import { BaseResponseDto } from 'src/common/dto/base-response.dto';
 
 @Injectable()
 export class CompanyService {
@@ -25,57 +24,47 @@ export class CompanyService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signin(data: CompanySigninInput): Promise<Token> {
-    try {
-      const company = await this.prisma.company.findFirst({
-        where: { registrationNumber: data.registrationNumber },
-      });
-
-      const passwordValid = await this.passwordService.validatePassword(
-        data.password,
-        company.password,
-      );
-
-      if (!passwordValid)
-        throw new BadRequestException('비밀번호가 일치하지 않습니다.');
-
-      return this.generateTokens({
-        companyId: company.id,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  async companySignin(data: CompanySigninInput): Promise<Token> {
+    const company = await this.prisma.company.findFirst({
+      where: { email: data.email },
+    });
+  
+    if (!company) throw new UnauthorizedException('해당 이메일로 등록된 사용자가 없습니다.');
+  
+    const passwordValid = await this.passwordService.validatePassword(
+      data.password,
+      company.password,
+    );
+  
+    if (!passwordValid) throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+  
+    return this.generateTokens({
+      companyId: company.id,
+    });
   }
-
+  
   async createCompany(payload: CompanySignupInput): Promise<Token> {
     payload.password = await this.passwordService.hashPassword(
       payload.password,
     );
 
-    try {
-      const check = await this.prisma.company.findMany({
-        where: { registrationNumber: payload.registrationNumber },
-      });
+    const existingCompany = await this.prisma.company.findFirst({
+      where: { email: payload.email },
+    });
 
-      if (check.length > 0)
-        throw new ConflictException('이미 등록된 사업자 번호 입니다.');
+    if (existingCompany)
+      throw new ConflictException('이미 등록된 이메일 입니다.');
 
-      const company = await this.prisma.company.create({
-        data: {
-          ...payload,
-        },
-      });
+    const company = await this.prisma.company.create({
+      data: {
+        ...payload,
+      },
+    });
 
-      return this.generateTokens({
-        companyId: company.id,
-      });
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-      throw new Error('An unexpected error occurred during company creation.');
-    }
-  }
+    return this.generateTokens({
+      companyId: company.id,
+    });
+}
 
   validateCompany(companyId: number): Promise<Company> {
     return this.prisma.company.findUnique({ where: { id: companyId } });
@@ -105,78 +94,60 @@ export class CompanyService {
   async userApproved(
     data: CompanyJoinRequestDto,
     company: any,
-  ): Promise<CompanyUserResponse> {
-    try {
-      const companyUser = await this.prisma.companyUser.findFirst({
-        where: {
-          companyId: company.id,
-          status: 'PENDING',
-          userId: data.userId,
-        },
-      });
+  ): Promise<BaseResponseDto> {
+    const companyUser = await this.prisma.companyUser.findFirst({
+      where: {
+        companyId: company.id,
+        status: 'PENDING',
+        userId: data.userId,
+      },
+    });
 
-      if (!companyUser)
-        throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
+    if (!companyUser)
+      throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
 
-      await this.prisma.companyUser.update({
-        where: {
-          id: companyUser.id,
-        },
-        data: {
-          status: 'APPROVED',
-        },
-      });
-      return {
-        success: true,
-        message: '가입이 승인되었습니다.',
-      };
-    } catch (error) {
-      if (error instanceof PrismaClientValidationError) {
-        console.error('Prisma Client Validation Error: ', error); // 오류 로그 추가
-        throw new Error('Prisma validation error occurred');
-      }
-      return {
-        success: false,
-        message: error,
-      };
-    }
+    await this.prisma.companyUser.update({
+      where: {
+        id: companyUser.id,
+      },
+      data: {
+        status: 'APPROVED',
+      },
+    });
+    return {
+      success: true,
+      message: '가입이 승인되었습니다.',
+    };
   }
 
   async userRejected(
     data: CompanyJoinRequestDto,
     company: any,
-  ): Promise<CompanyUserResponse> {
-    try {
-      const companyUser = await this.prisma.companyUser.findFirst({
-        where: {
-          companyId: company.id,
-          status: 'PENDING',
-          userId: data.userId,
-        },
-      });
+  ): Promise<BaseResponseDto> {
+    const companyUser = await this.prisma.companyUser.findFirst({
+      where: {
+        companyId: company.id,
+        status: 'PENDING',
+        userId: data.userId,
+      },
+    });
 
-      if (!companyUser)
-        throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
+    if (!companyUser)
+      throw new NotFoundException('권한 혹은 데이터가 존재하지 않습니다.');
 
-      await this.prisma.companyUser.update({
-        where: {
-          id: companyUser.id,
-        },
-        data: {
-          status: 'REJECTED',
-        },
-      });
+    await this.prisma.companyUser.update({
+      where: {
+        id: companyUser.id,
+      },
+      data: {
+        status: 'REJECTED',
+      },
+    });
 
-      return {
-        success: true,
-        message: '가입 승인 거절이 완료되었습니다.',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error,
-      };
-    }
+    return {
+      success: true,
+      message: '가입 승인 거절이 완료되었습니다.',
+    };
   }
 
   async userWithCompanyListAll(company: any): Promise<userWithCompanyDto[]> {
@@ -351,25 +322,19 @@ export class CompanyService {
   async userCompanyDelete(
     data: CompanyUserDto,
     company: any,
-  ): Promise<CompanyUserResponse> {
-    try {
-      await this.prisma.companyUser.delete({
-        where: {
-          id: data.id,
-          userId: data.userId,
-          companyId: company.id,
-        },
-      });
+  ): Promise<BaseResponseDto> {
+    await this.prisma.companyUser.delete({
+      where: {
+        id: data.id,
+        userId: data.userId,
+        companyId: company.id,
+      },
+    });
 
-      return {
-        success: true,
-        message: '삭제되었습니다.',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error,
-      };
-    }
+    return {
+      success: true,
+      message: '삭제되었습니다.',
+    };
+
   }
 }
