@@ -15,19 +15,6 @@ A field whose value is a JSON Web Token (JWT): https://jwt.io/introduction.
 """
 scalar JWT
 
-type Auth {
-  """access token"""
-  accessToken: JWT!
-
-  """refresh token"""
-  refreshToken: JWT!
-}
-
-type CompanyUserResponse {
-  success: Boolean!
-  message: String!
-}
-
 type userWithCompanyDto {
   id: Float!
   name: String!
@@ -44,6 +31,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type BaseResponseDto {
+  success: Boolean!
+  message: String!
+}
+
 type Company {
   """고유 아이디"""
   id: ID
@@ -58,11 +50,6 @@ type Company {
   password: String!
   registrationNumber: String!
   manager: String!
-}
-
-type BaseResponseDto {
-  success: Boolean!
-  message: String!
 }
 
 type QRCodeResponseDto {
@@ -134,6 +121,14 @@ type Payments {
   paymentDate: DateTime!
 }
 
+type Auth {
+  """access token"""
+  accessToken: JWT!
+
+  """refresh token"""
+  refreshToken: JWT!
+}
+
 type Query {
   appServer: String!
   restaurantFindByAddress(keyword: String!): [Restaurant!]!
@@ -161,11 +156,11 @@ input CouponUseDto {
 type Mutation {
   storeSignin(data: StoreInput!): Auth!
   storeSignup(data: StoreInput!): Auth!
-  signup(data: CompanySignupInput!): Auth!
-  signin(data: CompanySigninInput!): Auth!
-  userApproved(data: CompanyJoinRequestDto!): CompanyUserResponse!
-  userRejected(data: CompanyJoinRequestDto!): CompanyUserResponse!
-  userCompanyDelete(data: CompanyUserDto!): CompanyUserResponse!
+  companySignup(data: CompanySignupInput!): Token!
+  companySignin(data: CompanySigninInput!): Token!
+  userApproved(data: CompanyJoinRequestDto!): BaseResponseDto!
+  userRejected(data: CompanyJoinRequestDto!): BaseResponseDto!
+  userCompanyDelete(data: CompanyUserDto!): BaseResponseDto!
   userSignup(data: UserSignupInput!): Token!
   userSignin(data: UserSigninInput!): Token!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
@@ -179,14 +174,15 @@ input StoreInput {
 }
 
 input CompanySignupInput {
-  name: String!
+  companyName: String!
+  email: String!
   password: String!
   registrationNumber: String!
   manager: String!
 }
 
 input CompanySigninInput {
-  registrationNumber: String!
+  email: String!
   password: String!
 }
 
