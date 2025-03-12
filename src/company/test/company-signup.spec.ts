@@ -5,7 +5,7 @@ describe('signup', () => {
   let company;
 
   beforeEach(async () => {
-    company = await companyFactory.create();
+    company = await companyFactory.create({ email: 'company-signup@email.com' });
   });
 
   // When : 옳바른 정보로 Company SignUp 을 요청하면
@@ -76,7 +76,7 @@ describe('signup', () => {
   it('when a SignUp request is made with an already registered business number then an error message is returned.', async () => {
     const data = {
       companyName: 'Kim',
-      email: 'company@test.net',
+      email: 'company-signup@email.com',
       registrationNumber: '123-123-123',
       password: 'Password1234@@',
       manager: 'James',

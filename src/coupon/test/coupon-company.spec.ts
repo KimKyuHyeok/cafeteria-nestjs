@@ -18,7 +18,7 @@ describe('coupon-company', () => {
   let unauthorizedUser: any;
 
   beforeEach(async () => {
-    company = await companyFactory.create();
+    company = await companyFactory.create({ email: 'coupon-company@email.com' });
     payments1 = await paymentsFactory(company).create();
     payments2 = await paymentsFactory(company).create();
     restaurant = await restaurantFactory.create();

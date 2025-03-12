@@ -9,7 +9,7 @@ describe('user-with-company-request', () => {
   let user: User;
 
   beforeEach(async () => {
-    company = await companyFactory.create();
+    company = await companyFactory.create({ email: 'user-with-company@email.com' });
     user = await userFactory.create();
   });
 

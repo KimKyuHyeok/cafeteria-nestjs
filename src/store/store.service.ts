@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'nestjs-prisma';
@@ -19,51 +19,45 @@ export class StoreService {
   ) {}
 
   async storeSignin(data: StoreInput): Promise<Token> {
-    try {
-      const store = await this.prisma.store.findFirst({
-        where: { name: data.name },
-      });
 
-      const passwordValid = await this.passwordService.validatePassword(
-        data.password,
-        store.password,
-      );
+    const store = await this.prisma.store.findFirst({
+      where: { email: data.email },
+    });
 
-      if (!passwordValid)
-        throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+    const passwordValid = await this.passwordService.validatePassword(
+      data.password,
+      store.password,
+    );
 
-      return this.generateTokens({
-        storeId: store.id,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    if (!passwordValid)
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
+
+    return this.generateTokens({
+      storeId: store.id,
+    });
   }
 
   async storeSignup(data: StoreInput): Promise<Token> {
     data.password = await this.passwordService.hashPassword(data.password);
 
-    try {
-      const check = await this.prisma.store.findMany({
-        where: { name: data.name },
-      });
+    const existingStore = await this.prisma.store.findFirst({
+      where: { name: data.email },
+    });
 
-      if (check.length > 0)
-        throw new ConflictException('이미 가입된 이메일 입니다.');
+    if (existingStore)
+      throw new ConflictException('이미 가입된 이메일 입니다.');
 
-      const store = await this.prisma.store.create({
-        data: {
-          name: data.name,
-          password: data.password,
-        },
-      });
+    const store = await this.prisma.store.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+      },
+    });
 
-      return this.generateTokens({
-        storeId: store.id,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    return this.generateTokens({
+      storeId: store.id,
+    });
   }
 
   validateStore(storeId: number): Promise<Store> {
