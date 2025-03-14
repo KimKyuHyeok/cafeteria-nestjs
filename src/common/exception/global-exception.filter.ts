@@ -37,9 +37,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = '데이터 유효성 검사에 실패했습니다.';
     }
 
-    response.status(statusCode).json({
-      success: false,
-      message,
-    });
+    // Express에 맞춰 상태 코드를 설정
+    if (response.status) {
+      response.status(statusCode).json({
+        success: false,
+        message,
+      });
+    }
   }
 }
