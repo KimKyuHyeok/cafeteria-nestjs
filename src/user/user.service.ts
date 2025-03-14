@@ -11,8 +11,9 @@ import { Token } from 'src/common/auth/model/token.model';
 import { User } from './models/user.model';
 import { UserSigninInput } from './input/user-signin.input';
 import { CompanyUserJoinRequestDto } from './dto/company-user-join.request';
-import { Company } from 'src/company/model/company.model';
 import { BaseResponseDto } from 'src/common/dto/base-response.dto';
+import { CompanyDto, CompanySearchDto } from './dto/company-search.dto';
+import { CompanySearchInput } from './input/company-search.input';
 
 @Injectable()
 export class UserService {
@@ -108,13 +109,32 @@ export class UserService {
     };
   }
 
-  async companyListSearch(keyword: string): Promise<Company[]> {
-    return await this.prisma.company.findMany({
+  async companyListSearch(data: CompanySearchInput): Promise<CompanySearchDto> {
+    const companies = await this.prisma.company.findMany({
       where: {
         companyName: {
-          contains: keyword.toLowerCase(),
+          contains: data.keyword.toLowerCase(),
         },
       },
+      skip: data.skip,
+      take: data.take
     });
+
+    const totalCount = await this.prisma.company.count({
+      where: {
+        companyName: { contains: data.keyword.toLowerCase() }
+      }
+    })
+
+    const companyDtos: CompanyDto[] = companies.map(company => ({
+      id: company.id,
+      companyName: company.companyName,
+      registrationNumber: company.registrationNumber
+    }))
+
+    return {
+      companies: companyDtos,
+      totalCount
+    }
   }
 }
