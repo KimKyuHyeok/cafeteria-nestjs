@@ -36,20 +36,32 @@ type BaseResponseDto {
   message: String!
 }
 
-type Company {
-  """고유 아이디"""
-  id: ID
+type CompanySearchDto {
+  companies: [CompanyDto!]!
+  totalCount: Float!
+}
 
-  """생성일"""
-  createdAt: DateTime
-
-  """수정일"""
-  updatedAt: DateTime
-  email: String!
-  companyName: String!
-  password: String!
+type CompanyDto {
+  id: Float!
   registrationNumber: String!
-  manager: String!
+  companyName: String!
+}
+
+type UserInfo {
+  name: String!
+  email: String!
+  phoneNumber: String!
+}
+
+type CompanyUserInfo {
+  companyUserId: Float!
+  companyName: String!
+  status: String!
+}
+
+type MyPageInfoDto {
+  userInfo: UserInfo!
+  companyUserInfo: [CompanyUserInfo!]!
 }
 
 type QRCodeResponseDto {
@@ -116,14 +128,6 @@ type Payments {
   paymentDate: DateTime!
 }
 
-type Auth {
-  """access token"""
-  accessToken: JWT!
-
-  """refresh token"""
-  refreshToken: JWT!
-}
-
 type Query {
   appServer: String!
   restaurantFindByAddress(keyword: String!): [Restaurant!]!
@@ -131,12 +135,20 @@ type Query {
   userWithCompanyListByPending: [userWithCompanyDto!]!
   userWithCompanyListByApproved: [userWithCompanyDto!]!
   userWithCompanyListByRejected: [userWithCompanyDto!]!
-  companyListSearch(keyword: String!): [Company!]!
+  companyListSearch(data: CompanySearchInput!): CompanySearchDto!
+  myPageInfoSelect: MyPageInfoDto!
+  isValidateUser: Boolean!
   couponsFindByCompanyId: [RestaurantWithCouponsDto!]!
   couponsFindByUserId: [RestaurantWithCouponsDto!]!
   couponSelectByCompanyId(data: CouponSelectDto!): Float!
   generateQrCode(data: CouponUseDto!): QRCodeResponseDto!
   selectPayments: [Payments!]!
+}
+
+input CompanySearchInput {
+  keyword: String!
+  skip: Int!
+  take: Int!
 }
 
 input CouponSelectDto {
@@ -149,8 +161,8 @@ input CouponUseDto {
 }
 
 type Mutation {
-  storeSignin(data: StoreInput!): Auth!
-  storeSignup(data: StoreInput!): Auth!
+  storeSignin(data: StoreInput!): Token!
+  storeSignup(data: StoreInput!): Token!
   companySignup(data: CompanySignupInput!): Token!
   companySignin(data: CompanySigninInput!): Token!
   userApproved(data: CompanyJoinRequestDto!): BaseResponseDto!
@@ -159,6 +171,7 @@ type Mutation {
   userSignup(data: UserSignupInput!): Token!
   userSignin(data: UserSigninInput!): Token!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
+  myPageInfoUpdate(data: UserInfoUpdateInput!): BaseResponseDto!
   couponCharge(data: CouponChargeDto!): Coupon!
   couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
@@ -207,6 +220,12 @@ input UserSigninInput {
 
 input CompanyUserJoinRequestDto {
   companyId: Float!
+}
+
+input UserInfoUpdateInput {
+  name: String
+  password: String
+  phoneNumber: String
 }
 
 input CouponChargeDto {

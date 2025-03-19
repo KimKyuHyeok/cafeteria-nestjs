@@ -7,8 +7,11 @@ import { UserEntity } from 'src/common/decorators/user.decorator';
 import { CompanyUserJoinRequestDto } from './dto/company-user-join.request';
 import { UseGuards } from '@nestjs/common';
 import { GqlUserAuthGuard } from 'src/company/gql-user-auth.guard';
-import { Company } from 'src/company/model/company.model';
 import { BaseResponseDto } from 'src/common/dto/base-response.dto';
+import { CompanySearchDto } from './dto/company-search.dto';
+import { CompanySearchInput } from './input/company-search.input';
+import { MyPageInfoDto } from './dto/mypage-info.dto';
+import { UserInfoUpdateInput } from './input/user-info-update.input';
 
 @Resolver()
 export class UserResolver {
@@ -44,10 +47,28 @@ export class UserResolver {
   }
 
   @UseGuards(GqlUserAuthGuard)
-  @Query(() => [Company])
-  async companyListSearch(
-    @Args('keyword') keyword: string,
-  ): Promise<Company[]> {
-    return await this.userService.companyListSearch(keyword);
+  @Query(() => CompanySearchDto)
+  async companyListSearch(@Args('data') data: CompanySearchInput): Promise<CompanySearchDto> {
+    return await this.userService.companyListSearch(data);
+  }
+
+  @UseGuards(GqlUserAuthGuard)
+  @Query(() => MyPageInfoDto)
+  async myPageInfoSelect(@UserEntity() user: any): Promise<MyPageInfoDto> {
+    return await this.userService.myPageInfoSelect(user);
+  }
+
+  @UseGuards(GqlUserAuthGuard)
+  @Mutation(() => BaseResponseDto)
+  async myPageInfoUpdate(
+    @UserEntity() user: any, @Args('data') data: UserInfoUpdateInput
+    ): Promise<BaseResponseDto> {
+      return await this.userService.myPageInfoUpdate(data, user);
+  }
+  
+  @UseGuards(GqlUserAuthGuard)
+  @Query(() => Boolean)
+  async isValidateUser(@UserEntity() user: any): Promise<Boolean> {
+    return this.userService.isValidateUser(user);
   }
 }
