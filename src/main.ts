@@ -8,7 +8,7 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter());
 
   app.enableCors({
-    origin: process.env.VUE_SERVER,
+    origin: 'http://www.siggwon-moa.shop',
     methods: 'GET,HEAD,POST,PUT,DELETE,OPTIONS',
     credentials: true,
   });
