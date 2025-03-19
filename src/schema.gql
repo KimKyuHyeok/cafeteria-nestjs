@@ -47,6 +47,23 @@ type CompanyDto {
   companyName: String!
 }
 
+type UserInfo {
+  name: String!
+  email: String!
+  phoneNumber: String!
+}
+
+type CompanyUserInfo {
+  companyUserId: Float!
+  companyName: String!
+  status: String!
+}
+
+type MyPageInfoDto {
+  userInfo: UserInfo!
+  companyUserInfo: [CompanyUserInfo!]!
+}
+
 type QRCodeResponseDto {
   url: String!
 }
@@ -119,6 +136,8 @@ type Query {
   userWithCompanyListByApproved: [userWithCompanyDto!]!
   userWithCompanyListByRejected: [userWithCompanyDto!]!
   companyListSearch(data: CompanySearchInput!): CompanySearchDto!
+  myPageInfoSelect: MyPageInfoDto!
+  isValidateUser: Boolean!
   couponsFindByCompanyId: [RestaurantWithCouponsDto!]!
   couponsFindByUserId: [RestaurantWithCouponsDto!]!
   couponSelectByCompanyId(data: CouponSelectDto!): Float!
@@ -152,6 +171,7 @@ type Mutation {
   userSignup(data: UserSignupInput!): Token!
   userSignin(data: UserSigninInput!): Token!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
+  myPageInfoUpdate(data: UserInfoUpdateInput!): BaseResponseDto!
   couponCharge(data: CouponChargeDto!): Coupon!
   couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
@@ -200,6 +220,12 @@ input UserSigninInput {
 
 input CompanyUserJoinRequestDto {
   companyId: Float!
+}
+
+input UserInfoUpdateInput {
+  name: String
+  password: String
+  phoneNumber: String
 }
 
 input CouponChargeDto {
