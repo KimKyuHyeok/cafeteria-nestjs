@@ -51,27 +51,20 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
 
-            echo "Testing SSH connection with verbose output..."
-            ssh -vvv ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful'"
+            echo "Pulling the latest Docker image..."
+            docker pull devkyu96/siggwon-moa:v1
 
-            echo "Pulling the Docker image..."
+            echo "Stopping and removing existing container if running..."
+            docker stop siggwon-prd || true
+            docker rm siggwon-prd || true
 
-            if [ $? -eq 0 ]; then
-              echo "Image pulled successfully."
+            echo "Running the new container..."
+            docker run -d --name siggwon-prd -p 80:80 --env-file .env devkyu96/siggwon-moa:v1
 
-              if [ $(docker ps -aq -f name=siggwon-prd) ]; then
-                echo "Stopping and removing existing siggwon-prd container.."
-                docker stop siggwon-prd || true
-                docker rm siggwon-prd || true
-              else
-                echo "No running container found for siggwon-prd."
-              fi
+            echo "Applying Prisma migrations..."
+            docker exec siggwon-prd npx prisma migrate deploy
 
-              echo "Running docker-compose up..."
-              docker-compose -f docker-compose.yml up -d
+            echo "Generating Prisma Client..."
+            docker exec siggwon-prd npx prisma generate
 
-
-            else
-              echo "Image pull failed. Aborting"
-              exit 1
-            fi
+            echo "Deployment successful!"
