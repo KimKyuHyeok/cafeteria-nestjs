@@ -59,12 +59,6 @@ jobs:
             docker rm siggwon-prd || true
 
             echo "Running the new container..."
-            docker run -d --name siggwon-prd -p 80:80 --env-file .env devkyu96/siggwon-moa:v1
+            docker run -d --name siggwon-prd -p 80:80
 
-            echo "Applying Prisma migrations..."
-            docker exec siggwon-prd npx prisma migrate deploy
-
-            echo "Generating Prisma Client..."
-            docker exec siggwon-prd npx prisma generate
-
-            echo "Deployment successful!"
+            echo "Server Start"
