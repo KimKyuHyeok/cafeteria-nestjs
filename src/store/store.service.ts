@@ -6,9 +6,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'nestjs-prisma';
 import { PasswordService } from 'src/common/auth/password.service';
-import { StoreInput } from './dto/store-input.dto';
 import { Token } from 'src/common/auth/model/token.model';
 import { Store } from './model/store.modle';
+import { StoreSigninInput } from './input/store-siginin.input';
+import { StoreSignupInput } from './input/store-siginup.input';
 
 @Injectable()
 export class StoreService {
@@ -18,7 +19,7 @@ export class StoreService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async storeSignin(data: StoreInput): Promise<Token> {
+  async storeSignin(data: StoreSigninInput): Promise<Token> {
 
     const store = await this.prisma.store.findFirst({
       where: { email: data.email },
@@ -37,7 +38,7 @@ export class StoreService {
     });
   }
 
-  async storeSignup(data: StoreInput): Promise<Token> {
+  async storeSignup(data: StoreSignupInput): Promise<Token> {
     data.password = await this.passwordService.hashPassword(data.password);
 
     const existingStore = await this.prisma.store.findFirst({

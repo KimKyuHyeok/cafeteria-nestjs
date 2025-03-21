@@ -161,8 +161,8 @@ input CouponUseDto {
 }
 
 type Mutation {
-  storeSignin(data: StoreInput!): Token!
-  storeSignup(data: StoreInput!): Token!
+  storeSignin(data: StoreSigninInput!): Token!
+  storeSignup(data: StoreSignupInput!): Token!
   companySignup(data: CompanySignupInput!): Token!
   companySignin(data: CompanySigninInput!): Token!
   userApproved(data: CompanyJoinRequestDto!): BaseResponseDto!
@@ -176,7 +176,12 @@ type Mutation {
   couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
 
-input StoreInput {
+input StoreSigninInput {
+  email: String!
+  password: String!
+}
+
+input StoreSignupInput {
   email: String!
   name: String!
   password: String!
