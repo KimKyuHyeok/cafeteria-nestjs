@@ -3,12 +3,11 @@ FROM node:18
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
-COPY . .
+COPY . . 
 
-RUN npx prisma generate && npm run build
+RUN rm -rf dist && npx prisma generate && npm run build
 
 EXPOSE 3000
 
