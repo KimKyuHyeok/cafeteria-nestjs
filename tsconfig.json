@@ -21,4 +21,7 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["@types/jest", "@quramy/jest-prisma"]
   },
+  "include": [
+    "src/**/*.ts",
+  ]
 }
