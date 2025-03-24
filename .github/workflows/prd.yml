@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean dist folder
+        run: rm -rf dist/
+
       - name: Build
         run: npm run build
 
@@ -38,7 +41,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build --platform linux/amd64 -t devkyu96/siggwon-moa:v1 .
+        run: docker build --no-cache --platform linux/amd64 -t devkyu96/siggwon-moa:v1 .
 
       - name: Push Docker image
         run: docker push devkyu96/siggwon-moa:v1
@@ -50,7 +53,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-
             echo "Pulling the latest Docker image..."
             docker pull devkyu96/siggwon-moa:v1
 
@@ -59,6 +61,6 @@ jobs:
             docker rm siggwon-prd || true
 
             echo "Running the new container..."
-            docker-compose up -d
+            docker-compose up -d --build  # Ensure to rebuild the container
 
             echo "Server Start"
