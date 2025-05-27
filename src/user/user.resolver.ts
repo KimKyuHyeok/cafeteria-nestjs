@@ -12,6 +12,9 @@ import { CompanySearchDto } from './dto/company-search.dto';
 import { CompanySearchInput } from './input/company-search.input';
 import { MyPageInfoDto } from './dto/mypage-info.dto';
 import { UserInfoUpdateInput } from './input/user-info-update.input';
+import GraphQLJSON from 'graphql-type-json';
+import { AuthResponseDto } from './dto/auth.response.dto';
+import { AuthSignupDto } from './dto/auth.signup.dto';
 
 @Resolver()
 export class UserResolver {
@@ -70,5 +73,22 @@ export class UserResolver {
   @Query(() => Boolean)
   async isValidateUser(@UserEntity() user: any): Promise<Boolean> {
     return this.userService.isValidateUser(user);
+  }
+
+  @Query(() => String)
+  getKakaoAuthUrl(): string {
+    return this.userService.getKakaoAuthUrl();
+  }
+
+  @Mutation(() => AuthResponseDto)
+  loginWithKakao(
+    @Args('code') code: string
+  ): Promise<AuthResponseDto> {
+    return this.userService.loginWithKakao(code);
+  }
+
+  @Mutation(() => Boolean)
+  signupWithKakao(@Args('data') data: AuthSignupDto) {
+    return this.userService.signupWithKakao(data);
   }
 }
