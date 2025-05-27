@@ -66,7 +66,12 @@ export class UserService {
   }
 
   async validateUser(userId: number): Promise<User> {
-    return await this.prisma.user.findUnique({ where: { id: userId } });
+    let result = await this.prisma.user.findUnique({ where: { id: userId }})
+
+    if (!result) {
+      result = await this.prisma.user.findFirst({ where: { username: userId.toString() }})
+    }
+    return result;
   }
 
   async isValidateUser(user: any): Promise<Boolean> {
