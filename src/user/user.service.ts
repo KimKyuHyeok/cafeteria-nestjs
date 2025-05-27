@@ -65,24 +65,37 @@ export class UserService {
     return this.generateTokens({ userId: user.id });
   }
 
-  async validateUser(userId: number): Promise<User> {
-    let result = await this.prisma.user.findUnique({ where: { id: userId }})
-
+  async validateUser(userId: number | string): Promise<User> {
+    const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId
+  
+    let result = await this.prisma.user.findUnique({
+      where: { id: numericUserId },
+    })
+  
     if (!result) {
-      result = await this.prisma.user.findFirst({ where: { username: userId.toString() }})
+      result = await this.prisma.user.findFirst({
+        where: { username: numericUserId.toString() },
+      })
     }
-    return result;
+  
+    return result
   }
 
-  async isValidateUser(user: any): Promise<Boolean> {
-    let isValid = await this.prisma.user.findFirst({ where: { id: user.id }});
-
+  async isValidateUser(user: any): Promise<boolean> {
+    const id = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id;
+  
+    let isValid = await this.prisma.user.findFirst({
+      where: { id: id },
+    });
+  
     if (!isValid) {
-      isValid = await this.prisma.user.findFirst({ where: { username: user.id }})
+      isValid = await this.prisma.user.findFirst({
+        where: { username: user.id.toString() },
+      });
     }
-    
-    return isValid ? true : false;
-  }
+  
+    return !!isValid;
+  }  
 
   private generateTokens(payload: { userId: number }): Token {
     return {
