@@ -70,7 +70,11 @@ export class UserService {
   }
 
   async isValidateUser(user: any): Promise<Boolean> {
-    const isValid = await this.prisma.user.findFirst({ where: { id: user.id }});
+    let isValid = await this.prisma.user.findFirst({ where: { id: user.id }});
+
+    if (!isValid) {
+      isValid = await this.prisma.user.findFirst({ where: { username: user.id }})
+    }
     
     return isValid ? true : false;
   }
