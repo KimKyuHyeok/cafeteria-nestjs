@@ -16,6 +16,11 @@ import { CompanyDto, CompanySearchDto } from './dto/company-search.dto';
 import { CompanySearchInput } from './input/company-search.input';
 import { CompanyUserInfo, MyPageInfoDto } from './dto/mypage-info.dto';
 import { UserInfoUpdateInput } from './input/user-info-update.input';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
+import { randomBytes } from 'crypto';
+import { AuthSignupDto } from './dto/auth.signup.dto';
+import { AuthResponseDto } from './dto/auth.response.dto';
 
 @Injectable()
 export class UserService {
@@ -23,6 +28,7 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   async userSignin(data: UserSigninInput): Promise<Token> {
@@ -201,6 +207,100 @@ export class UserService {
     return {
       success: true,
       message: '내 정보가 성공적으로 변경되었습니다.'
+    }
+  }
+
+  getKakaoAuthUrl(): string {
+    const key = this.configService.get('KAKAO_REST_API');
+    const callbackUri = this.configService.get('KAKAO_REDIRECT_URI');
+
+    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${key}&redirect_uri=${callbackUri}`;
+    return kakaoLoginUrl;
+  }
+
+  async getKakaoToken(code: string): Promise<string> {
+      const tokenUrl = 'https://kauth.kakao.com/oauth/token';
+      const tokenParams = new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: this.configService.get('KAKAO_REST_API'),
+          client_secret: this.configService.get('KAKAO_CLIENT_SECRET'),
+          redirect_uri: this.configService.get('KAKAO_REDIRECT_URI'),
+          code
+      });
+
+      const response = await axios.post(tokenUrl, tokenParams.toString(), {
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      });
+
+      const { access_token } = response.data;
+
+      return access_token;
+  }
+
+  async getKakaoUser(token: string) {
+      const profileUrl = 'https://kapi.kakao.com/v2/user/me';
+      const profileResponse = await axios.get(profileUrl, {
+          headers: {
+              Authorization: `Bearer ${token}`
+          },
+      });
+
+      const kakaoData = profileResponse.data;
+
+      return {
+          username: kakaoData.id,
+          email: kakaoData.email,
+          name: kakaoData.name,
+          phoneNumber: kakaoData.phone_number
+      }
+  }
+
+  async loginWithKakao(code: string): Promise<AuthResponseDto> {
+    try {
+        const token = await this.getKakaoToken(code);
+        const profile = await this.getKakaoUser(token);
+        const username = profile.username.toString();
+
+        const user = await this.prisma.user.findFirst({
+            where: {
+                username
+            }
+        })
+
+        if (!user) return {
+          username,
+          isRegistered: false
+        }
+
+        const tokens = await this.generateTokens({ userId: username });
+
+        return {
+          isRegistered: true,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken
+        }
+    } catch (error) {
+      console.error('loginWithKakao error: ', error);
+      throw new Error('Kakao 로그인 실패: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }
+
+  async signupWithKakao(data: AuthSignupDto): Promise<Boolean> {
+    try {
+      const randomString = randomBytes(15).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+
+      await this.prisma.user.create({
+        data: {
+          ...data,
+          password: randomString
+        }
+      })
+      return true
+    } catch (error) {
+      console.error('signupWithKakao error: ', error);
+      throw new Error('Kakao 회원가입 실패: ' + (error instanceof Error ? error.message : String(error)));
     }
   }
 }

@@ -64,6 +64,13 @@ type MyPageInfoDto {
   companyUserInfo: [CompanyUserInfo!]!
 }
 
+type AuthResponseDto {
+  accessToken: String
+  refreshToken: String
+  isRegistered: Boolean
+  username: String
+}
+
 type QRCodeResponseDto {
   url: String!
 }
@@ -138,6 +145,7 @@ type Query {
   companyListSearch(data: CompanySearchInput!): CompanySearchDto!
   myPageInfoSelect: MyPageInfoDto!
   isValidateUser: Boolean!
+  getKakaoAuthUrl: String!
   couponsFindByCompanyId: [RestaurantWithCouponsDto!]!
   couponsFindByUserId: [RestaurantWithCouponsDto!]!
   couponSelectByCompanyId(data: CouponSelectDto!): Float!
@@ -172,6 +180,8 @@ type Mutation {
   userSignin(data: UserSigninInput!): Token!
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
   myPageInfoUpdate(data: UserInfoUpdateInput!): BaseResponseDto!
+  loginWithKakao(code: String!): AuthResponseDto!
+  signupWithKakao(data: AuthSignupDto!): Boolean!
   couponCharge(data: CouponChargeDto!): Coupon!
   couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
@@ -231,6 +241,13 @@ input UserInfoUpdateInput {
   name: String
   password: String
   phoneNumber: String
+}
+
+input AuthSignupDto {
+  name: String!
+  email: String!
+  phoneNumber: String!
+  username: String!
 }
 
 input CouponChargeDto {
