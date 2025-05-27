@@ -87,7 +87,7 @@ export class UserResolver {
     return this.userService.loginWithKakao(code);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => AuthResponseDto)
   signupWithKakao(@Args('data') data: AuthSignupDto) {
     return this.userService.signupWithKakao(data);
   }

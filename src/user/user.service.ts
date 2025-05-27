@@ -287,17 +287,25 @@ export class UserService {
     }
   }
 
-  async signupWithKakao(data: AuthSignupDto): Promise<Boolean> {
+  async signupWithKakao(data: AuthSignupDto): Promise<AuthResponseDto> {
     try {
       const randomString = randomBytes(15).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
 
-      await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           ...data,
           password: randomString
         }
       })
-      return true
+
+      const userId = parseInt(user.username);
+
+      const tokens = await this.generateTokens({ userId: userId });
+      return {
+        isRegistered: true,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }
     } catch (error) {
       console.error('signupWithKakao error: ', error);
       throw new Error('Kakao 회원가입 실패: ' + (error instanceof Error ? error.message : String(error)));
