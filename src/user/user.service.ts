@@ -45,7 +45,7 @@ export class UserService {
 
     if (!passwordValid) throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
 
-    return this.generateTokens({ userId: user.id });
+    return this.generateTokens({ userId: user.id, name: user.name });
   }
 
   async userSignup(payload: UserSignupInput): Promise<Token> {
@@ -62,7 +62,7 @@ export class UserService {
       data: { ...payload },
     });
 
-    return this.generateTokens({ userId: user.id });
+    return this.generateTokens({ userId: user.id, name: user.name });
   }
 
   async validateUser(userId: number | string): Promise<User> {
@@ -97,7 +97,7 @@ export class UserService {
     return !!isValid;
   }  
 
-  private generateTokens(payload: { userId: number }): Token {
+  private generateTokens(payload: { userId: number, name: string }): Token {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),
@@ -296,7 +296,7 @@ export class UserService {
           isRegistered: false
         }
 
-        const tokens = await this.generateTokens({ userId: username });
+        const tokens = await this.generateTokens({ userId: username, name: user.name });
 
         return {
           isRegistered: true,
@@ -322,7 +322,7 @@ export class UserService {
 
       const userId = parseInt(user.username);
 
-      const tokens = await this.generateTokens({ userId: userId });
+      const tokens = await this.generateTokens({ userId: userId, name: user.name });
       return {
         isRegistered: true,
         accessToken: tokens.accessToken,
