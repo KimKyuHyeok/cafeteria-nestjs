@@ -31,6 +31,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/websockets": "^10.4.18",
     "@prisma/client": "^5.22.0",
     "@quramy/jest-prisma": "^1.8.0",
     "@quramy/jest-prisma-node": "^1.8.0",
@@ -50,7 +51,8 @@
     "prisma": "^5.22.0",
     "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
