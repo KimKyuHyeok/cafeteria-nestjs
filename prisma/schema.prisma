@@ -17,6 +17,11 @@ enum Status {
   REJECTED
 }
 
+enum SenderType {
+  User
+  Company
+}
+
 model Company {
   id  Int   @id() @default(autoincrement())
   email String @unique()
@@ -43,6 +48,16 @@ model User {
   updatedAt DateTime @updatedAt()
   CompanyUser CompanyUser[]
   usageHistory UsageHistory[]
+}
+
+model ChatMessage {
+  id    Int     @id() @default(autoincrement())
+  roomId  String
+  senderId  Int
+  senderType SenderType
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 model CompanyUser {
