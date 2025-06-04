@@ -4,3 +4,6 @@ export interface CustomSocket extends Socket {
     user?: any;
     company?: any;
 }
+
+
+

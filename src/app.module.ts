@@ -23,6 +23,7 @@ import { StoreResolver } from './store/store.resolver';
 import { StoreService } from './store/store.service';
 import { StoreModule } from './store/store.module';
 import { join } from 'path';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { join } from 'path';
     PaymentsModule,
     UsageHistoryModule,
     StoreModule,
+    ChatModule,
   ],
   providers: [
     AppResolver,
