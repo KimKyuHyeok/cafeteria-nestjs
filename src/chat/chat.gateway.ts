@@ -18,7 +18,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: CustomSocket) {
     try {
-      console.log("Connect : ", client.company);
       const companyId = client.user?.companyId || client.company?.companyId;
   
       if (!companyId) {

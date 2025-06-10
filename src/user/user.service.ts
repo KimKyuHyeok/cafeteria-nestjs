@@ -219,7 +219,6 @@ export class UserService {
         }
       })
     } else {
-      console.log(data);
       await this.prisma.user.update({
         where: { id: user.id },
         data: { name: data.name, phoneNumber: data.phoneNumber }
