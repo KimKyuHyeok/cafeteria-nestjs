@@ -7,6 +7,9 @@ import {
   import { MessageMappingProperties } from '@nestjs/websockets';
   import { fromEvent, Observable } from 'rxjs';
   import { mergeMap } from 'rxjs/operators';
+import { JwtService } from '@nestjs/jwt';
+import { ChatService } from 'src/chat/chat.service';
+import { createSocketMiddleware } from '../middleware/socket.middleware';
   
   export class CustomSocketIoAdapter implements WebSocketAdapter {
     private server: Server;
@@ -18,13 +21,21 @@ import {
       if (this.server) {
         return this.server
       }
-      
+
+      const jwtService = this.app.get(JwtService);
+      const chatService = this.app.get(ChatService);
+      const middleware = createSocketMiddleware(jwtService, chatService)
+
+
       this.server = new Server(this.app.getHttpServer(), {
         cors: {
           origin: "*",
         },
         transports: ["websocket"]
       })
+
+      
+      this.server.use(middleware);
 
       return this.server;
     }
@@ -33,7 +44,6 @@ import {
       server.on('connection', callback);
     }
   
-    // ✅ 필수: NestJS가 메시지를 바인딩하는 데 필요
     bindMessageHandlers(
       client: Socket,
       handlers: MessageMappingProperties[],
