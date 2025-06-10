@@ -13,12 +13,35 @@ export class ChatService {
     }
 
     async selectMessages(roomId: string) {
-        return await this.prisma.chatMessage.findMany({
+        const messages =  await this.prisma.chatMessage.findMany({
             where: { roomId },
             orderBy: {
                 createdAt: 'asc'
             }
         })
+
+        const enhancedMessages = await Promise.all(
+            messages.map(async (msg) => {
+                let senderName = '';
+                if (msg.senderType === 'User') {
+                    const user = await this.prisma.user.findUnique({
+                        where: { id: msg.senderId }
+                    })
+                    senderName = user?.name ?? ''
+                } else if (msg.senderType === 'Company') {
+                    const company = await this.prisma.company.findUnique({
+                        where: { id: msg.senderId }
+                    })
+                    senderName = company?.companyName ?? '';
+                }
+                return {
+                    ...msg,
+                    senderName,
+                }
+            })
+        )
+
+        return enhancedMessages;
     }
 
     async companyUserFindByUserId(data: { userId: number, name: string}) {
@@ -40,5 +63,19 @@ export class ChatService {
             }
         });
         return !!record;
+    }
+
+    async companyNameFindById(companyId: number) {
+        return this.prisma.company.findUnique({
+            where: { id: companyId },
+            select: { companyName: true }
+        })
+    }
+
+    async userNameFindById(userId: number) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { name: true }
+        })
     }
 }
