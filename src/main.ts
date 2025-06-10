@@ -8,13 +8,11 @@ async function bootstrap() {
 
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // app.enableCors({
-  //   origin: 'http://www.siggwon-moa.shop',
-  //   methods: 'GET,HEAD,POST,PUT,DELETE,OPTIONS',
-  //   credentials: true,
-  // });
-
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://www.siggwon-moa.shop',
+    methods: 'GET,HEAD,POST,PUT,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   app.useWebSocketAdapter(new CustomSocketIoAdapter(app));
 
