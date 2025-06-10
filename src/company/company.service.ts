@@ -40,6 +40,7 @@ export class CompanyService {
   
     return this.generateTokens({
       companyId: company.id,
+      companyName: company.companyName
     });
   }
   
@@ -63,6 +64,7 @@ export class CompanyService {
 
     return this.generateTokens({
       companyId: company.id,
+      companyName: company.companyName
     });
 }
 
@@ -70,7 +72,7 @@ export class CompanyService {
     return this.prisma.company.findUnique({ where: { id: companyId } });
   }
 
-  generateTokens(payload: { companyId: number }): Token {
+  generateTokens(payload: { companyId: number, companyName: string }): Token {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: this.generateRefreshToken(payload),

@@ -181,7 +181,7 @@ type Mutation {
   companyUserJoinRequest(data: CompanyUserJoinRequestDto!): BaseResponseDto!
   myPageInfoUpdate(data: UserInfoUpdateInput!): BaseResponseDto!
   loginWithKakao(code: String!): AuthResponseDto!
-  signupWithKakao(data: AuthSignupDto!): Boolean!
+  signupWithKakao(data: AuthSignupDto!): AuthResponseDto!
   couponCharge(data: CouponChargeDto!): Coupon!
   couponUse(qrData: QrDataDto!): BaseResponseDto!
 }
